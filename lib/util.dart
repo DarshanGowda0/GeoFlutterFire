@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:geoflutterfire/point.dart';
+
 class Util {
   static const BASE32_CODES = '0123456789bcdefghjkmnpqrstuvwxyz';
   Map<String, int> BASE32_CODES_DICT = new Map();
@@ -230,5 +232,55 @@ class Util {
       return 2;
     else
       return 1;
+  }
+
+  static final double MAX_SUPPORTED_RADIUS = 8587;
+
+  // Length of a degree latitude at the equator
+  static final double METERS_PER_DEGREE_LATITUDE = 110574;
+
+  // The equatorial circumference of the earth in meters
+  static final double EARTH_MERIDIONAL_CIRCUMFERENCE = 40007860;
+
+  // The equatorial radius of the earth in meters
+  static final double EARTH_EQ_RADIUS = 6378137;
+
+  // The meridional radius of the earth in meters
+  static final double EARTH_POLAR_RADIUS = 6357852.3;
+
+  /* The following value assumes a polar radius of
+     * r_p = 6356752.3
+     * and an equatorial radius of
+     * r_e = 6378137
+     * The value is calculated as e2 == (r_e^2 - r_p^2)/(r_e^2)
+     * Use exact value to avoid rounding errors
+     */
+  final double EARTH_E2 = 0.00669447819799;
+
+  // Cutoff for floating point calculations
+  final double EPSILON = 1e-12;
+
+  static double distance(Coordinates location1, Coordinates location2) {
+    return calcDistance(location1.latitude, location1.longitude,
+        location2.latitude, location2.longitude);
+  }
+
+  static double calcDistance(
+      double lat1, double long1, double lat2, double long2) {
+    // Earth's mean radius in meters
+    final double radius = (EARTH_EQ_RADIUS + EARTH_POLAR_RADIUS) / 2;
+    double latDelta = _toRadians(lat1 - lat2);
+    double lonDelta = _toRadians(long1 - long2);
+
+    double a = (sin(latDelta / 2) * sin(latDelta / 2)) +
+        (cos(_toRadians(lat1)) *
+            cos(_toRadians(lat2)) *
+            sin(lonDelta / 2) *
+            sin(lonDelta / 2));
+    return radius * 2 * atan2(sqrt(a), sqrt(1 - a));
+  }
+
+  static double _toRadians(double num) {
+    return num * (pi / 180.0);
   }
 }
