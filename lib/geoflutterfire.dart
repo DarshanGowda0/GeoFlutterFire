@@ -1,6 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geoflutterfire/util.dart';
 
 class Geoflutterfire {
   /*static const MethodChannel _channel =
@@ -11,6 +12,14 @@ class Geoflutterfire {
     return version;
   }*/
 
-  Geoflutterfire(){}
+  Geoflutterfire(){
+    
+  }
+  
+  static List<double> getHash(){
+    List<double> something = Util().decode_bbox("tdr1zdkb0");
+    return something;
+  }
+
 
 }

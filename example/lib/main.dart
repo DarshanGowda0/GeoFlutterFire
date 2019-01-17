@@ -12,15 +12,19 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+
 
   @override
   void initState() {
     super.initState();
+    List something = Geoflutterfire.getHash();
+    for (double some in something) {
+      print(some);
+    }
 //    initPlatformState();
   }
 
- /* // Platform messages are asynchronous, so we initialize in an async method.
+  /* // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     String platformVersion;
     // Platform messages may fail, so we use a try/catch PlatformException.
@@ -48,7 +52,7 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: '),
+          child: Text('Hash Val '),
         ),
       ),
     );

@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  cloud_firestore: ^0.8.2+3
 
 flutter:
   plugin:
