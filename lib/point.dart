@@ -16,19 +16,19 @@ class GeoFirePoint {
     return Util.distance(to, from);
   }
 
-  get hash {
+  String get hash {
     return _util.encode(this.latitude, this.longitude, 9);
   }
 
-  get neighbors {
+  List<String> get neighbors {
     return _util.neighbors(this.hash);
   }
 
-  get geoPoint {
+  GeoPoint get geoPoint {
     return GeoPoint(this.latitude, this.longitude);
   }
 
-  get coords {
+  Coordinates get coords {
     return Coordinates(this.latitude, this.longitude);
   }
 

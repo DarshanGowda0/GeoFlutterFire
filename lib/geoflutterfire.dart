@@ -12,9 +12,6 @@ class Geoflutterfire {
     return version;
   }*/
 
-  Geoflutterfire(){
-    
-  }
   
   static List<double> getHash(){
     List<double> something = Util().decode_bbox("tdr1zdkb0");

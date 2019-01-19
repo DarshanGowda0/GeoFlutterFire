@@ -200,7 +200,7 @@ class Util {
     return neighborHashList;
   }
 
-  static int setPrecision(int km) {
+  static int setPrecision(double km) {
     /*
       * 1	≤ 5,000km	×	5,000km
       * 2	≤ 1,250km	×	625km
