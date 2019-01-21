@@ -277,7 +277,7 @@ class Util {
             cos(_toRadians(lat2)) *
             sin(lonDelta / 2) *
             sin(lonDelta / 2));
-    return radius * 2 * atan2(sqrt(a), sqrt(1 - a));
+    return radius * 2 * atan2(sqrt(a), sqrt(1 - a))/1000;
   }
 
   static double _toRadians(double num) {

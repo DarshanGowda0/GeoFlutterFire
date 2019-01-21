@@ -12,8 +12,12 @@ class GeoFirePoint {
     app = Firestore.instance;
   }
 
-  static distance(Coordinates to, Coordinates from) {
+  static double distanceBetween(Coordinates to, Coordinates from) {
     return Util.distance(to, from);
+  }
+
+  static List<String> neighborsOf(String hash){
+    return _util.neighbors(hash);
   }
 
   String get hash {
@@ -32,12 +36,16 @@ class GeoFirePoint {
     return Coordinates(this.latitude, this.longitude);
   }
 
+  double distance(double latitude, double longitude) {
+    return distanceBetween(coords, Coordinates(latitude, longitude));
+  }
+
   get data {
     return {'geopoint': this.geoPoint, 'geohash': this.hash};
   }
 
   haversineDistance(lat, lng) {
-    return GeoFirePoint.distance(this.coords, Coordinates(lat, lng));
+    return GeoFirePoint.distanceBetween(this.coords, Coordinates(lat, lng));
   }
 }
 

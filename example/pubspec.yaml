@@ -20,6 +20,8 @@ dev_dependencies:
   geoflutterfire:
     path: ../
 
+  cloud_firestore: ^0.8.2+3
+
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
 
