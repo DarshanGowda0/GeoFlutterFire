@@ -19,11 +19,4 @@ class Geoflutterfire {
   GeoFirePoint point({@required double latitude, @required double longitude}) {
     return GeoFirePoint(latitude, longitude);
   }
-
-  static List<double> getHash() {
-    List<double> something = Util().decode_bbox("tdr1zdkb0");
-    return something;
-  }
-
-  something() {}
 }

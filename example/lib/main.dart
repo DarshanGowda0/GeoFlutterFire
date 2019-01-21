@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geoflutterfire/point.dart';
 import 'package:rxdart/src/observables/observable.dart';
 

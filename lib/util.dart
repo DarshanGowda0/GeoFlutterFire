@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:geoflutterfire/point.dart';
 
 class Util {
@@ -24,7 +23,6 @@ class Util {
   /// longitude. Key is # of desired sig figs, value is minimum length of
   /// the geohash.
   /// @type Array
-  ///
   // Desired sig figs:      0  1  2  3   4   5   6   7   8   9  10
   var SIGFIG_HASH_LENGTH = [0, 5, 7, 8, 11, 12, 13, 15, 16, 17, 18];
 
@@ -32,8 +30,6 @@ class Util {
   /// Encode
   /// Create a geohash from latitude and longitude
   /// that is 'number of chars' long
-  ///
-
   String encode(var latitude, var longitude, var numberOfChars) {
     if (numberOfChars == ENCODE_AUTO) {
       if (latitude.runtimeType == double || longitude.runtimeType == double) {
@@ -89,8 +85,6 @@ class Util {
   ///
   /// Decode a hashString into a bound box that matches it.
   /// Data returned in a List [minLat, minLon, maxLat, maxLon]
-  ///
-
   List<double> decode_bbox(String hashString) {
     var isLon = true;
     double maxLat = 90, minLat = -90, maxLon = 180, minLon = -180, mid;
@@ -124,10 +118,8 @@ class Util {
   }
 
   ///
-  /// Decode a hashString into a pair of latitude and longitude.
+  /// Decode a [hashString] into a pair of latitude and longitude.
   /// A map is returned with keys 'latitude', 'longitude','latitudeError','longitudeError'
-  ///
-
   Map<String, double> decode(String hashString) {
     List<double> bbox = decode_bbox(hashString);
     double lat = (bbox[0] + bbox[2]) / 2;
@@ -151,8 +143,6 @@ class Util {
   /// direction [lat, lon], i.e.
   /// [1,0] - north
   /// [1,1] - northeast
-  ///
-
   String neighbor(String hashString, var direction) {
     var lonLat = decode(hashString);
     var neighborLat =
@@ -168,8 +158,6 @@ class Util {
   /// 7 0 1
   /// 6 X 2
   /// 5 4 3
-  ///
-
   List<String> neighbors(String hashString) {
     int hashStringLength = hashString.length;
     var lonlat = decode(hashString);
@@ -277,7 +265,7 @@ class Util {
             cos(_toRadians(lat2)) *
             sin(lonDelta / 2) *
             sin(lonDelta / 2));
-    return radius * 2 * atan2(sqrt(a), sqrt(1 - a))/1000;
+    return radius * 2 * atan2(sqrt(a), sqrt(1 - a)) / 1000;
   }
 
   static double _toRadians(double num) {
