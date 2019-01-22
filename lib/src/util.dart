@@ -166,12 +166,12 @@ class Util {
     double latErr = lonlat['latitudeError'] * 2;
     double lonErr = lonlat['longitudeError'] * 2;
 
-    var neighbor_lat, neighbor_lon;
+    var neighborLat, neighborLon;
 
     String encodeNeighbor(neighborLatDir, neighborLonDir) {
-      neighbor_lat = lat + neighborLatDir * latErr;
-      neighbor_lon = lon + neighborLonDir * lonErr;
-      return encode(neighbor_lat, neighbor_lon, hashStringLength);
+      neighborLat = lat + neighborLatDir * latErr;
+      neighborLon = lon + neighborLonDir * lonErr;
+      return encode(neighborLat, neighborLon, hashStringLength);
     }
 
     var neighborHashList = [

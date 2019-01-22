@@ -15,7 +15,7 @@ Heavily influenced by [GeoFireX](https://github.com/codediodeio/geofirex) :fire:
 You should ensure that you add GeoFlutterFire as a dependency in your flutter project.
 ```yaml
 dependencies:
-    geoflutterfire: "1.0.0"
+    geoflutterfire: "1.0.2"
 ```
 
 You can also reference the git repo directly if you want:
