@@ -5,6 +5,7 @@ import 'package:geoflutterfire/point.dart';
 import 'package:rxdart/src/observables/observable.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:rxdart/rxdart.dart';
 
 void main() => runApp(MaterialApp(
       title: 'Geo Flutter Fire example',
@@ -24,7 +25,8 @@ class _MyAppState extends State<MyApp> {
   // firestore init
   Firestore _firestore = Firestore.instance;
   Geoflutterfire geo;
-  Observable<DocumentSnapshot> stream;
+  Stream<List<DocumentSnapshot>> stream;
+  var radius = BehaviorSubject(seedValue: 1.0);
 
   @override
   void initState() {
@@ -33,85 +35,111 @@ class _MyAppState extends State<MyApp> {
     _longitudeController = TextEditingController();
 
     geo = Geoflutterfire(_firestore);
+    GeoFirePoint center = geo.point(latitude: 12.960632, longitude: 77.641603);
+    stream = radius.switchMap((rad) {
+      return geo
+          .collection(collectionPath: 'locations')
+          .within(center, rad, 'position');
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    radius.close();
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-          appBar: AppBar(
-            title: const Text('GeoFlutterFire'),
-            actions: <Widget>[
-              IconButton(
-                onPressed: _mapController == null
-                    ? null
-                    : () {
-                        _showHome();
-                      },
-                icon: Icon(Icons.home),
-              )
-            ],
-          ),
-          body: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Center(
-                  child: Card(
-                    elevation: 4,
-                    margin: EdgeInsets.symmetric(vertical: 8),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width - 30,
-                      height: MediaQuery.of(context).size.height * (1 / 3),
-                      child: GoogleMap(onMapCreated: _onMapCreated),
-                    ),
+        appBar: AppBar(
+          title: const Text('GeoFlutterFire'),
+          actions: <Widget>[
+            IconButton(
+              onPressed: _mapController == null
+                  ? null
+                  : () {
+                      _showHome();
+                    },
+              icon: Icon(Icons.home),
+            )
+          ],
+        ),
+        body: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Center(
+                child: Card(
+                  elevation: 4,
+                  margin: EdgeInsets.symmetric(vertical: 8),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width - 30,
+                    height: MediaQuery.of(context).size.height * (1 / 3),
+                    child: GoogleMap(onMapCreated: _onMapCreated),
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Container(
-                      width: 100,
-                      child: TextField(
-                        controller: _latitudeController,
-                        keyboardType: TextInputType.number,
-                        textInputAction: TextInputAction.next,
-                        decoration: InputDecoration(
-                            labelText: 'lat',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            )),
-                      ),
-                    ),
-                    Container(
-                      width: 100,
-                      child: TextField(
-                        controller: _longitudeController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                            labelText: 'lng',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            )),
-                      ),
-                    ),
-                    MaterialButton(
-                      color: Colors.blue,
-                      onPressed: () {
-                        double lat = double.parse(_latitudeController.text);
-                        double lng = double.parse(_longitudeController.text);
-                        _addPoint(lat, lng);
-                      },
-                      child: Text(
-                        'ADD',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    )
-                  ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Slider(
+                  min: 1,
+                  max: 200,
+                  divisions: 4,
+                  value: _value,
+                  label: _label,
+                  activeColor: Colors.blue,
+                  inactiveColor: Colors.blue.withOpacity(0.2),
+                  onChanged: (double value) => changed(value),
                 ),
-              ],
-            ),
-          )),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Container(
+                    width: 100,
+                    child: TextField(
+                      controller: _latitudeController,
+                      keyboardType: TextInputType.number,
+                      textInputAction: TextInputAction.next,
+                      decoration: InputDecoration(
+                          labelText: 'lat',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          )),
+                    ),
+                  ),
+                  Container(
+                    width: 100,
+                    child: TextField(
+                      controller: _longitudeController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                          labelText: 'lng',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          )),
+                    ),
+                  ),
+                  MaterialButton(
+                    color: Colors.blue,
+                    onPressed: () {
+                      double lat = double.parse(_latitudeController.text);
+                      double lng = double.parse(_longitudeController.text);
+                      _addPoint(lat, lng);
+                    },
+                    child: Text(
+                      'ADD',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -119,6 +147,10 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _mapController = controller;
       _showHome();
+      //start listening after map is created
+      stream.listen((List<DocumentSnapshot> documentList) {
+        _updateMarkers(documentList);
+      });
     });
   }
 
@@ -147,9 +179,26 @@ class _MyAppState extends State<MyApp> {
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
     );
     setState(() {
-      _mapController.animateCamera(CameraUpdate.newCameraPosition(
-          CameraPosition(target: LatLng(lat, lng), zoom: 15.0)));
       _mapController.addMarker(_marker);
     });
+  }
+
+  void _updateMarkers(List<DocumentSnapshot> documentList) {
+    documentList.forEach((DocumentSnapshot document) {
+      GeoPoint point = document.data['position']['geopoint'];
+      _addMarker(point.latitude, point.longitude);
+    });
+  }
+
+  double _value = 20.0;
+  String _label = '';
+
+  changed(value) {
+    setState(() {
+      _value = value;
+      _label = '${_value.toInt().toString()} kms';
+      _mapController.clearMarkers();
+    });
+    radius.add(value);
   }
 }
