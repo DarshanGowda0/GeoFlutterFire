@@ -1,5 +1,4 @@
 import 'package:meta/meta.dart';
-
 import 'util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -41,7 +40,7 @@ class GeoFirePoint {
 
   /// return distance between [GeoFirePoint] and ([lat], [lng])
   double distance({@required double lat, @required double lng}) {
-    return distanceBetween(from: coords,to: Coordinates(lat, lng));
+    return distanceBetween(from: coords, to: Coordinates(lat, lng));
   }
 
   get data {
@@ -50,7 +49,8 @@ class GeoFirePoint {
 
   /// haversine distance between [GeoFirePoint] and ([lat], [lng])
   haversineDistance({@required double lat, @required double lng}) {
-    return GeoFirePoint.distanceBetween(from: coords,to: Coordinates(lat, lng));
+    return GeoFirePoint.distanceBetween(
+        from: coords, to: Coordinates(lat, lng));
   }
 }
 

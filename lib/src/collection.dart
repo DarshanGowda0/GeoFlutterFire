@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:geoflutterfire/point.dart';
+import 'package:geoflutterfire/src/point.dart';
 import 'util.dart';
 import 'package:rxdart/rxdart.dart';
 

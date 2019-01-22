@@ -1,17 +1,17 @@
 import 'dart:math';
-import 'package:geoflutterfire/point.dart';
+import 'package:geoflutterfire/src/point.dart';
 
 class Util {
   static const BASE32_CODES = '0123456789bcdefghjkmnpqrstuvwxyz';
-  Map<String, int> BASE32_CODES_DICT = new Map();
+  Map<String, int> base32CodesDic = new Map();
 
   Util() {
     for (var i = 0; i < BASE32_CODES.length; i++) {
-      BASE32_CODES_DICT.putIfAbsent(BASE32_CODES[i], () => i);
+      base32CodesDic.putIfAbsent(BASE32_CODES[i], () => i);
     }
   }
 
-  var ENCODE_AUTO = 'auto';
+  var encodeAuto = 'auto';
 
   ///
   /// Significant Figure Hash Length
@@ -23,46 +23,46 @@ class Util {
   /// longitude. Key is # of desired sig figs, value is minimum length of
   /// the geohash.
   /// @type Array
-  // Desired sig figs:      0  1  2  3   4   5   6   7   8   9  10
-  var SIGFIG_HASH_LENGTH = [0, 5, 7, 8, 11, 12, 13, 15, 16, 17, 18];
+  // Desired sig figs:    0  1  2  3   4   5   6   7   8   9  10
+  var sigfigHashLength = [0, 5, 7, 8, 11, 12, 13, 15, 16, 17, 18];
 
   ///
   /// Encode
   /// Create a geohash from latitude and longitude
   /// that is 'number of chars' long
   String encode(var latitude, var longitude, var numberOfChars) {
-    if (numberOfChars == ENCODE_AUTO) {
+    if (numberOfChars == encodeAuto) {
       if (latitude.runtimeType == double || longitude.runtimeType == double) {
         throw new Exception('string notation required for auto precision.');
       }
       int decSigFigsLat = latitude.split('.')[1].length;
       int decSigFigsLon = longitude.split('.')[1].length;
       int numberOfSigFigs = max(decSigFigsLat, decSigFigsLon);
-      numberOfChars = SIGFIG_HASH_LENGTH[numberOfSigFigs];
+      numberOfChars = sigfigHashLength[numberOfSigFigs];
     } else if (numberOfChars == null) {
       numberOfChars = 9;
     }
 
-    var chars = [], bits = 0, bitsTotal = 0, hash_value = 0;
+    var chars = [], bits = 0, bitsTotal = 0, hashValue = 0;
     double maxLat = 90, minLat = -90, maxLon = 180, minLon = -180, mid;
 
     while (chars.length < numberOfChars) {
       if (bitsTotal % 2 == 0) {
         mid = (maxLon + minLon) / 2;
         if (longitude > mid) {
-          hash_value = (hash_value << 1) + 1;
+          hashValue = (hashValue << 1) + 1;
           minLon = mid;
         } else {
-          hash_value = (hash_value << 1) + 0;
+          hashValue = (hashValue << 1) + 0;
           maxLon = mid;
         }
       } else {
         mid = (maxLat + minLat) / 2;
         if (latitude > mid) {
-          hash_value = (hash_value << 1) + 1;
+          hashValue = (hashValue << 1) + 1;
           minLat = mid;
         } else {
-          hash_value = (hash_value << 1) + 0;
+          hashValue = (hashValue << 1) + 0;
           maxLat = mid;
         }
       }
@@ -70,10 +70,10 @@ class Util {
       bits++;
       bitsTotal++;
       if (bits == 5) {
-        var code = BASE32_CODES[hash_value];
+        var code = BASE32_CODES[hashValue];
         chars.add(code);
         bits = 0;
-        hash_value = 0;
+        hashValue = 0;
       }
     }
 
@@ -85,14 +85,14 @@ class Util {
   ///
   /// Decode a hashString into a bound box that matches it.
   /// Data returned in a List [minLat, minLon, maxLat, maxLon]
-  List<double> decode_bbox(String hashString) {
+  List<double> decodeBbox(String hashString) {
     var isLon = true;
     double maxLat = 90, minLat = -90, maxLon = 180, minLon = -180, mid;
 
     var hashValue = 0;
     for (var i = 0, l = hashString.length; i < l; i++) {
       var code = hashString[i].toLowerCase();
-      hashValue = BASE32_CODES_DICT[code];
+      hashValue = base32CodesDic[code];
 
       for (var bits = 4; bits >= 0; bits--) {
         var bit = (hashValue >> bits) & 1;
@@ -121,7 +121,7 @@ class Util {
   /// Decode a [hashString] into a pair of latitude and longitude.
   /// A map is returned with keys 'latitude', 'longitude','latitudeError','longitudeError'
   Map<String, double> decode(String hashString) {
-    List<double> bbox = decode_bbox(hashString);
+    List<double> bbox = decodeBbox(hashString);
     double lat = (bbox[0] + bbox[2]) / 2;
     double lon = (bbox[1] + bbox[3]) / 2;
     double latErr = bbox[2] - lat;
@@ -222,19 +222,19 @@ class Util {
       return 1;
   }
 
-  static final double MAX_SUPPORTED_RADIUS = 8587;
+  static const double MAX_SUPPORTED_RADIUS = 8587;
 
   // Length of a degree latitude at the equator
-  static final double METERS_PER_DEGREE_LATITUDE = 110574;
+  static const double METERS_PER_DEGREE_LATITUDE = 110574;
 
   // The equatorial circumference of the earth in meters
-  static final double EARTH_MERIDIONAL_CIRCUMFERENCE = 40007860;
+  static const double EARTH_MERIDIONAL_CIRCUMFERENCE = 40007860;
 
   // The equatorial radius of the earth in meters
-  static final double EARTH_EQ_RADIUS = 6378137;
+  static const double EARTH_EQ_RADIUS = 6378137;
 
   // The meridional radius of the earth in meters
-  static final double EARTH_POLAR_RADIUS = 6357852.3;
+  static const double EARTH_POLAR_RADIUS = 6357852.3;
 
   /* The following value assumes a polar radius of
      * r_p = 6356752.3
@@ -243,10 +243,10 @@ class Util {
      * The value is calculated as e2 == (r_e^2 - r_p^2)/(r_e^2)
      * Use exact value to avoid rounding errors
      */
-  final double EARTH_E2 = 0.00669447819799;
+  static const double EARTH_E2 = 0.00669447819799;
 
   // Cutoff for floating point calculations
-  final double EPSILON = 1e-12;
+  static const double EPSILON = 1e-12;
 
   static double distance(Coordinates location1, Coordinates location2) {
     return calcDistance(location1.latitude, location1.longitude,
