@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geoflutterfire/point.dart';
-import 'package:rxdart/src/observables/observable.dart';
-
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -34,11 +32,13 @@ class _MyAppState extends State<MyApp> {
     _latitudeController = TextEditingController();
     _longitudeController = TextEditingController();
 
-    geo = Geoflutterfire(_firestore);
+    geo = Geoflutterfire();
     GeoFirePoint center = geo.point(latitude: 12.960632, longitude: 77.641603);
     stream = radius.switchMap((rad) {
+      var collectionReference = _firestore.collection('locations');
+//          .where('name', isEqualTo: 'darshan');
       return geo
-          .collection(collectionPath: 'locations')
+          .collection(collectionRef: collectionReference)
           .within(center, rad, 'position');
     });
   }

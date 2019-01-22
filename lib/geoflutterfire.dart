@@ -1,19 +1,13 @@
-import 'dart:async';
-import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geoflutterfire/point.dart';
-import 'package:geoflutterfire/util.dart';
 import 'package:meta/meta.dart';
 import 'collection.dart';
 
 class Geoflutterfire {
-  Firestore _firestore;
+  Geoflutterfire();
 
-  Geoflutterfire(this._firestore);
-
-  GeoFireCollectionRef collection(
-      {@required String collectionPath, Query query}) {
-    return GeoFireCollectionRef(_firestore, collectionPath, query: query);
+  GeoFireCollectionRef collection({@required Query collectionRef}) {
+    return GeoFireCollectionRef(collectionRef);
   }
 
   GeoFirePoint point({@required double latitude, @required double longitude}) {

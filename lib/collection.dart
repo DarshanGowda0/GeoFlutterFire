@@ -4,20 +4,12 @@ import 'util.dart';
 import 'package:rxdart/rxdart.dart';
 
 class GeoFireCollectionRef {
-  CollectionReference _collectionReference;
+  Query _collectionReference;
   Stream<QuerySnapshot> _stream;
-  Query _query;
-  Firestore _firestore;
 
-  GeoFireCollectionRef(this._firestore, String collectionPath, {Query query}) {
-    _collectionReference = _firestore.collection(collectionPath);
-    if (query != null) {
-      _query = query;
-      _stream = _createStream(_query).shareReplay(maxSize: 1);
-    } else {
-      _query = _collectionReference;
-      _stream = _createStream(_collectionReference).shareReplay(maxSize: 1);
-    }
+  GeoFireCollectionRef(this._collectionReference)
+      : assert(_collectionReference != null) {
+    _stream = _createStream(_collectionReference).shareReplay(maxSize: 1);
   }
 
   /// return QuerySnapshot stream
@@ -37,26 +29,48 @@ class GeoFireCollectionRef {
 
   /// add a document to collection with [data]
   Future<DocumentReference> add(Map<String, dynamic> data) {
-    return _collectionReference.add(data);
+    try {
+      CollectionReference colRef = _collectionReference;
+      return colRef.add(data);
+    } catch (e) {
+      throw Exception(
+          'cannot call add on Query, use collection reference instead');
+    }
   }
 
   /// delete document with [id] from the collection
   Future<void> delete(id) {
-    return _collectionReference.document(id).delete();
+    try {
+      CollectionReference colRef = _collectionReference;
+      return colRef.document(id).delete();
+    } catch (e) {
+      throw Exception(
+          'cannot call add on Query, use collection reference instead');
+    }
   }
 
   /// create or update a document with [id], [merge] defines whether the document should overwrite
   Future<void> setDoc(String id, var data, {bool merge = false}) {
-    return _collectionReference.document(id).setData(data, merge: merge);
+    try {
+      CollectionReference colRef = _collectionReference;
+      return colRef.document(id).setData(data, merge: merge);
+    } catch (e) {
+      throw Exception(
+          'cannot call add on Query, use collection reference instead');
+    }
   }
 
   /// set a geo point with [latitude] and [longitude] using [field] as the object key to the document with [id]
   Future<void> setPoint(
       String id, String field, double latitude, double longitude) {
-    var point = GeoFirePoint(latitude, longitude).data;
-    return _collectionReference
-        .document(id)
-        .setData({'$field': point}, merge: true);
+    try {
+      CollectionReference colRef = _collectionReference;
+      var point = GeoFirePoint(latitude, longitude).data;
+      return colRef.document(id).setData({'$field': point}, merge: true);
+    } catch (e) {
+      throw Exception(
+          'cannot call add on Query, use collection reference instead');
+    }
   }
 
   /// query firestore documents based on geographic [radius] from geoFirePoint [center]
@@ -105,7 +119,7 @@ class GeoFireCollectionRef {
   /// construct a query for the [geoHash] and [field]
   Query _queryPoint(String geoHash, String field) {
     String end = '$geoHash~';
-    Query temp = _query;
+    Query temp = _collectionReference;
     return temp.orderBy('$field.geohash').startAt([geoHash]).endAt([end]);
   }
 
