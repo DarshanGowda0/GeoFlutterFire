@@ -2,7 +2,7 @@
 
 GeoFlutterFire is an open-source library that allows you to store and query a set of keys based on their geographic location. At its heart, GeoFlutterFire simply stores locations with string keys. Its main benefit, however, is the possibility of retrieving only those keys within a given geographic area - all in realtime.
 
-GeoFlutterFire uses the Firebase Firestore Database for data storage, allowing query results to be updated in realtime as they change. GeoFire selectively loads only the data near certain locations, keeping your applications light and responsive, even with extremely large datasets.
+GeoFlutterFire uses the Firebase Firestore Database for data storage, allowing query results to be updated in realtime as they change. GeoFlutterFire selectively loads only the data near certain locations, keeping your applications light and responsive, even with extremely large datasets.
 
 GeoFlutterFire is designed as a lightweight add-on to cloud_firestore plugin. To keep things simple, GeoFlutterFire stores data in its own format within your Firestore database. This allows your existing data format and Security Rules to remain unchanged while still providing you with an easy solution for geo queries.
 
@@ -68,7 +68,7 @@ GeoFirePoint center = geo.point(latitude: 12.960632, longitude: 77.641603);
 // get the collection reference or query
 var collectionReference = _firestore.collection('locations');
 
-double radius = 100;
+double radius = 50;
 String field = 'position';
 
 Stream<List<DocumentSnapshot>> stream = geo.collection(collectionRef: collectionReference).within(center, radius, field);
@@ -106,7 +106,7 @@ Note: collectionReference can be of type CollectionReference or Query
 
 Query the parent Firestore collection by geographic distance. It will return documents that exist within X kilometers of the centerpoint.
 
-Each documentSnapshot.data also contains returns _distance_ calculated on the query.
+Each documentSnapshot.data also contains _distance_ calculated on the query.
 
 **Returns:** `Stream<List<DocumentSnapshot>>`
 
