@@ -61,7 +61,7 @@ class GeoFireCollectionRef {
 
   /// query firestore documents based on geographic [radius] from geoFirePoint [center]
   /// [field] specifies the name of the key in the document
-  Stream<DocumentSnapshot> within(
+  Stream<List<DocumentSnapshot>> within(
       GeoFirePoint center, double radius, String field) {
     int precision = Util.setPrecision(radius);
     String centerHash = center.hash.substring(0, precision);
@@ -76,19 +76,26 @@ class GeoFireCollectionRef {
     });
 
     var mergedObservable = Observable.merge(queries);
-    var flattenedObservable = mergedObservable.expand((pair) => pair);
-    var filtered = flattenedObservable.where((DocumentSnapshot doc) {
-      GeoPoint geoPoint = doc.data[field]['geopoint'];
-      double distance =
-          center.distance(lat: geoPoint.latitude, lng: geoPoint.longitude);
-      return distance <= radius * 1.02; // buffer for edge distances;
-    }).map((DocumentSnapshot documentSnapshot) {
-      GeoPoint geoPoint = documentSnapshot.data[field]['geopoint'];
-      documentSnapshot.data.putIfAbsent(
-          'distance',
-          () =>
-              center.distance(lat: geoPoint.latitude, lng: geoPoint.longitude));
-      return documentSnapshot;
+
+    var filtered = mergedObservable.map((List<DocumentSnapshot> list) {
+      var filteredList = list.where((DocumentSnapshot doc) {
+        GeoPoint geoPoint = doc.data[field]['geopoint'];
+        double distance =
+            center.distance(lat: geoPoint.latitude, lng: geoPoint.longitude);
+        return distance <= radius * 1.02; // buffer for edge distances;
+      }).map((DocumentSnapshot documentSnapshot) {
+        GeoPoint geoPoint = documentSnapshot.data[field]['geopoint'];
+        documentSnapshot.data['distance'] =
+            center.distance(lat: geoPoint.latitude, lng: geoPoint.longitude);
+        return documentSnapshot;
+      }).toList();
+      filteredList.sort((a, b) {
+        double distA = a.data['distance'] * 1000 * 1000;
+        double distB = b.data['distance'] * 1000 * 1000;
+        int val = distA.toInt() - distB.toInt();
+        return val;
+      });
+      return filteredList;
     });
     return filtered.asBroadcastStream();
   }
@@ -97,7 +104,7 @@ class GeoFireCollectionRef {
 
   /// construct a query for the [geoHash] and [field]
   Query _queryPoint(String geoHash, String field) {
-    String end = '~';
+    String end = '$geoHash~';
     Query temp = _query;
     return temp.orderBy('$field.geohash').startAt([geoHash]).endAt([end]);
   }
