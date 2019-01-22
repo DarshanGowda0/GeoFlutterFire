@@ -45,7 +45,7 @@ class GeoFireCollectionRef {
       return colRef.document(id).delete();
     } catch (e) {
       throw Exception(
-          'cannot call add on Query, use collection reference instead');
+          'cannot call delete on Query, use collection reference instead');
     }
   }
 
@@ -56,7 +56,7 @@ class GeoFireCollectionRef {
       return colRef.document(id).setData(data, merge: merge);
     } catch (e) {
       throw Exception(
-          'cannot call add on Query, use collection reference instead');
+          'cannot call set on Query, use collection reference instead');
     }
   }
 
@@ -69,7 +69,7 @@ class GeoFireCollectionRef {
       return colRef.document(id).setData({'$field': point}, merge: true);
     } catch (e) {
       throw Exception(
-          'cannot call add on Query, use collection reference instead');
+          'cannot call set on Query, use collection reference instead');
     }
   }
 
