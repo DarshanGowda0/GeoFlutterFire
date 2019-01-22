@@ -89,8 +89,8 @@ class GeoFireCollectionRef {
           () =>
               center.distance(lat: geoPoint.latitude, lng: geoPoint.longitude));
       return documentSnapshot;
-    }).shareReplay(maxSize: 1);
-    return filtered;
+    });
+    return filtered.asBroadcastStream();
   }
 
   /// INTERNAL FUNCTIONS

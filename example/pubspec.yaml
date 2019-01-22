@@ -21,6 +21,7 @@ dev_dependencies:
     path: ../
 
   cloud_firestore: ^0.8.2+3
+  google_maps_flutter: ^0.0.3+3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
