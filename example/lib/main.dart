@@ -77,7 +77,13 @@ class _MyAppState extends State<MyApp> {
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width - 30,
                     height: MediaQuery.of(context).size.height * (1 / 3),
-                    child: GoogleMap(onMapCreated: _onMapCreated),
+                    child: GoogleMap(
+                      onMapCreated: _onMapCreated,
+                      initialCameraPosition: const CameraPosition(
+                        target: LatLng(12.960632, 77.641603),
+                        zoom: 15.0,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -146,7 +152,7 @@ class _MyAppState extends State<MyApp> {
   void _onMapCreated(GoogleMapController controller) {
     setState(() {
       _mapController = controller;
-      _showHome();
+//      _showHome();
       //start listening after map is created
       stream.listen((List<DocumentSnapshot> documentList) {
         _updateMarkers(documentList);

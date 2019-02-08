@@ -15,7 +15,7 @@ Heavily influenced by [GeoFireX](https://github.com/codediodeio/geofirex) :fire:
 You should ensure that you add GeoFlutterFire as a dependency in your flutter project.
 ```yaml
 dependencies:
-    geoflutterfire: "1.0.2"
+    geoflutterfire: ^2.0.0
 ```
 
 You can also reference the git repo directly if you want:
@@ -34,7 +34,7 @@ There is a detailed example project in the `example` folder. Check that out or k
 ## Initialize
 
 You need a firebase project with [Firestore](https://pub.dartlang.org/packages/cloud_firestore) setup.
-```
+```dart
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -45,14 +45,14 @@ Firestore _firestore = Firestore.instance;
 
 ## Writing Geo data
 Add geo data to your firestore document using `GeoFirePoint`
-```
+```dart
 GeoFirePoint myLocation = geo.point(latitude: 12.960632, longitude: 77.641603);
 ```
 Next, add the GeoFirePoint to you document using Firestore's add method
-```
+```dart
  _firestore
         .collection('locations')
-        .add({'name': 'random name', 'position': geoFirePoint.data});
+        .add({'name': 'random name', 'position': myLocation.data});
 ```
 
 Calling `geoFirePoint.data` returns an object that contains a [geohash string](https://www.movable-type.co.uk/scripts/geohash.html) and a [Firestore GeoPoint](https://firebase.google.com/docs/reference/android/com/google/firebase/firestore/GeoPoint). It should look like this in your database. You can name the object whatever you want and even save multiple points on a single document.
@@ -61,7 +61,7 @@ Calling `geoFirePoint.data` returns an object that contains a [geohash string](h
 
 ## Query Geo data
 To query a collection of documents with 50kms from a point
-```
+```dart
 // Create a geoFirePoint
 GeoFirePoint center = geo.point(latitude: 12.960632, longitude: 77.641603);
 
@@ -75,14 +75,14 @@ Stream<List<DocumentSnapshot>> stream = geo.collection(collectionRef: collection
 ```
 
 The within function returns a Stream of the list of DocumentSnapshot data, plus some useful metadata like distance from the centerpoint.
-```
+```dart
 stream.listen((List<DocumentSnapshot> documentList) {
         // doSomething()
       });
 ```
 
 You now have a realtime stream of data to visualize on a map.
-![](https://firebasestorage.googleapis.com/v0/b/geoflutterfire.appspot.com/o/ezgif.com-video-to-gif.gif?alt=media&token=1ab2caef-8c51-4489-bf6b-50003fa62150)
+![](https://firebasestorage.googleapis.com/v0/b/geoflutterfire.appspot.com/o/geflutterfire.gif?alt=media&token=8dc3aa9c-ee68-4dfe-9093-c3c1c48979dc)
 
 ## :notebook: API
 
@@ -92,7 +92,7 @@ Creates a GeoCollectionRef which can be used to make geo queries, alternatively 
 
 Example:
 
-```
+```dart
 // Collection ref
 // var collectionReference = _firestore.collection('locations').where('city', isEqualTo: 'bangalore');
 var collectionReference = _firestore.collection('locations');
@@ -154,7 +154,7 @@ Note: This query requires a composite index, which you will be prompted to creat
 
 Example:
 
-```
+```dart
 var queryRef = _firestore.collection('locations').where('city', isEqualTo: 'bangalore');
 var stream = geo
               .collection(collectionRef: queryRef)
@@ -163,7 +163,7 @@ var stream = geo
 
 ### Make Dynamic Queries the RxDart Way
 
-```
+```dart
 var radius = BehaviorSubject(seedValue: 1.0);
 var collectionReference = _firestore.collection('locations');
 
