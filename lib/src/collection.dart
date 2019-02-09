@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geoflutterfire/src/point.dart';
+import 'package:meta/meta.dart';
 import 'util.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -76,7 +77,9 @@ class GeoFireCollectionRef {
   /// query firestore documents based on geographic [radius] from geoFirePoint [center]
   /// [field] specifies the name of the key in the document
   Stream<List<DocumentSnapshot>> within(
-      GeoFirePoint center, double radius, String field) {
+      {@required GeoFirePoint center,
+      @required double radius,
+      @required String field}) {
     int precision = Util.setPrecision(radius);
     String centerHash = center.hash.substring(0, precision);
     List<String> area = GeoFirePoint.neighborsOf(hash: centerHash);
@@ -92,16 +95,23 @@ class GeoFireCollectionRef {
     var mergedObservable = Observable.merge(queries);
 
     var filtered = mergedObservable.map((List<DocumentSnapshot> list) {
-      var filteredList = list.where((DocumentSnapshot doc) {
-        GeoPoint geoPoint = doc.data[field]['geopoint'];
-        double distance =
-            center.distance(lat: geoPoint.latitude, lng: geoPoint.longitude);
-        return distance <= radius * 1.02; // buffer for edge distances;
-      }).map((DocumentSnapshot documentSnapshot) {
-        GeoPoint geoPoint = documentSnapshot.data[field]['geopoint'];
+      var filteredList = list.map((DocumentSnapshot documentSnapshot) {
+
+        // split and fetch geoPoint from the nested Map
+        List<String> fieldList = field.split('.');
+        var geoPointField = documentSnapshot.data[fieldList[0]];
+        if (fieldList.length > 1) {
+          for (int i = 1; i < fieldList.length; i++) {
+            geoPointField = geoPointField[fieldList[i]];
+          }
+        }
+        GeoPoint geoPoint = geoPointField['geopoint'];
         documentSnapshot.data['distance'] =
             center.distance(lat: geoPoint.latitude, lng: geoPoint.longitude);
         return documentSnapshot;
+      }).where((DocumentSnapshot doc) {
+        double distance = doc.data['distance'];
+        return distance <= radius * 1.02; // buffer for edge distances;
       }).toList();
       filteredList.sort((a, b) {
         double distA = a.data['distance'] * 1000 * 1000;

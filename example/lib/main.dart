@@ -39,7 +39,17 @@ class _MyAppState extends State<MyApp> {
 //          .where('name', isEqualTo: 'darshan');
       return geo
           .collection(collectionRef: collectionReference)
-          .within(center, rad, 'position');
+          .within(center: center, radius: rad, field: 'position');
+
+      /*
+      ****Example to specify nested object**** 
+      
+      var collectionReference = _firestore.collection('nestedLocations');
+//          .where('name', isEqualTo: 'darshan');
+      return geo.collection(collectionRef: collectionReference).within(
+          center: center, radius: rad, field: 'address.location.position');
+          
+      */
     });
   }
 
@@ -142,6 +152,18 @@ class _MyAppState extends State<MyApp> {
                   )
                 ],
               ),
+              MaterialButton(
+                color: Colors.amber,
+                child: Text(
+                  'Add nested ',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  double lat = double.parse(_latitudeController.text);
+                  double lng = double.parse(_longitudeController.text);
+                  _addNestedPoint(lat, lng);
+                },
+              )
             ],
           ),
         ),
@@ -170,11 +192,23 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _addPoint(double lat, double lng) {
-    _addMarker(lat, lng);
     GeoFirePoint geoFirePoint = geo.point(latitude: lat, longitude: lng);
     _firestore
         .collection('locations')
         .add({'name': 'random name', 'position': geoFirePoint.data}).then((_) {
+      print('added ${geoFirePoint.hash} successfully');
+    });
+  }
+
+  //example to add geoFirePoint inside nested object
+  void _addNestedPoint(double lat, double lng) {
+    GeoFirePoint geoFirePoint = geo.point(latitude: lat, longitude: lng);
+    _firestore.collection('nestedLocations').add({
+      'name': 'random name',
+      'address': {
+        'location': {'position': geoFirePoint.data}
+      }
+    }).then((_) {
       print('added ${geoFirePoint.hash} successfully');
     });
   }

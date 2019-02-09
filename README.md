@@ -96,15 +96,25 @@ Example:
 // Collection ref
 // var collectionReference = _firestore.collection('locations').where('city', isEqualTo: 'bangalore');
 var collectionReference = _firestore.collection('locations');
-var ref = geo.collection(collectionRef: collectionReference);
+var geoRef = geo.collection(collectionRef: collectionReference);
 ```
 Note: collectionReference can be of type CollectionReference or Query
 
 #### Performing Geo-Queries
 
-`ref.within(center: GeoFirePoint, radius: double, field: String)`
+`geoRef.within(center: GeoFirePoint, radius: double, field: String)`
 
-Query the parent Firestore collection by geographic distance. It will return documents that exist within X kilometers of the centerpoint.
+Query the parent Firestore collection by geographic distance. It will return documents that exist within X kilometers of the center-point.
+`field` supports nested objects in the firestore document.
+
+Example:
+```dart
+// For GeoFirePoint stored at the root of the firestore document
+geoRef.within(center: centerGeoPoint, radius: 50, field: 'position');
+
+// For GeoFirePoint nested in other objects of the firestore document
+geoRef.within(center: centerGeoPoint, radius: 50, field: 'address.location.position');
+```
 
 Each documentSnapshot.data also contains _distance_ calculated on the query.
 
@@ -114,19 +124,19 @@ Each documentSnapshot.data also contains _distance_ calculated on the query.
 
 Write data just like you would in Firestore
 
-`ref.add(data)`
+`geoRef.add(data)`
 
 Or use one of the client's conveniece methods
 
-- `ref.setDoc(String id, var data, {bool merge})` - Set a document in the collection with an ID.
-- `ref.setPoint(String id, String field, double latitude, double longitude)`- Add a geohash to an existing doc
+- `geoRef.setDoc(String id, var data, {bool merge})` - Set a document in the collection with an ID.
+- `geoRef.setPoint(String id, String field, double latitude, double longitude)`- Add a geohash to an existing doc
 
 #### Read Data
 
 In addition to Geo-Queries, you can also read the collection like you would normally in Firestore, but as an Observable
 
-- `ref.data()`- Stream of documentSnapshot
-- `ref.snapshot()`- Stream of Firestore QuerySnapshot
+- `geoRef.data()`- Stream of documentSnapshot
+- `geoRef.snapshot()`- Stream of Firestore QuerySnapshot
 
 ### `point(latitude: double, longitude: double)`
 
@@ -158,7 +168,7 @@ Example:
 var queryRef = _firestore.collection('locations').where('city', isEqualTo: 'bangalore');
 var stream = geo
               .collection(collectionRef: queryRef)
-              .within(center, rad, 'position');
+              .within(center: center, radius: rad, field: 'position');
 ```
 
 ### Make Dynamic Queries the RxDart Way
@@ -170,7 +180,7 @@ var collectionReference = _firestore.collection('locations');
 stream = radius.switchMap((rad) {
       return geo
           .collection(collectionRef: collectionReference)
-          .within(center, rad, 'position');
+          .within(center: center, radius: rad, field: 'position');
     });
 
 // Now update your query
