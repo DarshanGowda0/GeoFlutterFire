@@ -1,3 +1,6 @@
+## 2.0.1+1
+* bumped up the versions of kotlin-plugin and gradle. 
+
 ## 2.0.1
 * Support for GeoPoints nested inside the firestore document
 
