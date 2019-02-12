@@ -15,13 +15,13 @@ Heavily influenced by [GeoFireX](https://github.com/codediodeio/geofirex) :fire:
 You should ensure that you add GeoFlutterFire as a dependency in your flutter project.
 ```yaml
 dependencies:
-    geoflutterfire: ^2.0.1+1
+    geoflutterfire: "2.0.1+1"
 ```
 
 You can also reference the git repo directly if you want:
 ```yaml
 dependencies:
-    fluro:
+    geoflutterfire:
         git: git://github.com/DarshanGowda0/GeoFlutterFire.git
 ```
 
