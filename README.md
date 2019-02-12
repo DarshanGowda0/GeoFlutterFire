@@ -15,7 +15,7 @@ Heavily influenced by [GeoFireX](https://github.com/codediodeio/geofirex) :fire:
 You should ensure that you add GeoFlutterFire as a dependency in your flutter project.
 ```yaml
 dependencies:
-    geoflutterfire: "2.0.1+1"
+    geoflutterfire: ^2.0.2
 ```
 
 You can also reference the git repo directly if you want:
@@ -71,7 +71,8 @@ var collectionReference = _firestore.collection('locations');
 double radius = 50;
 String field = 'position';
 
-Stream<List<DocumentSnapshot>> stream = geo.collection(collectionRef: collectionReference).within(center, radius, field);
+Stream<List<DocumentSnapshot>> stream = geo.collection(collectionRef: collectionReference)
+                                        .within(center: center, radius: radius, field: field);
 ```
 
 The within function returns a Stream of the list of DocumentSnapshot data, plus some useful metadata like distance from the centerpoint.
@@ -83,6 +84,8 @@ stream.listen((List<DocumentSnapshot> documentList) {
 
 You now have a realtime stream of data to visualize on a map.
 ![](https://firebasestorage.googleapis.com/v0/b/geoflutterfire.appspot.com/o/geflutterfire.gif?alt=media&token=8dc3aa9c-ee68-4dfe-9093-c3c1c48979dc)
+
+
 
 ## :notebook: API
 
@@ -102,23 +105,28 @@ Note: collectionReference can be of type CollectionReference or Query
 
 #### Performing Geo-Queries
 
-`geoRef.within(center: GeoFirePoint, radius: double, field: String)`
+`geoRef.within(center: GeoFirePoint, radius: double, field: String, {strictMode: bool})`
 
 Query the parent Firestore collection by geographic distance. It will return documents that exist within X kilometers of the center-point.
 `field` supports nested objects in the firestore document.
 
+**Note:** Use optional parameter `strictMode = true` to filter the documents strictly within the bound of given radius.
+  
+
+
 Example:
 ```dart
 // For GeoFirePoint stored at the root of the firestore document
-geoRef.within(center: centerGeoPoint, radius: 50, field: 'position');
+geoRef.within(center: centerGeoPoint, radius: 50, field: 'position', strictMode: true);
 
 // For GeoFirePoint nested in other objects of the firestore document
-geoRef.within(center: centerGeoPoint, radius: 50, field: 'address.location.position');
+geoRef.within(center: centerGeoPoint, radius: 50, field: 'address.location.position', strictMode: true);
 ```
 
-Each documentSnapshot.data also contains _distance_ calculated on the query.
+Each `documentSnapshot.data` also contains `distance` calculated on the query.
 
 **Returns:** `Stream<List<DocumentSnapshot>>`
+
 
 #### Write Data
 
@@ -170,6 +178,14 @@ var stream = geo
               .collection(collectionRef: queryRef)
               .within(center: center, radius: rad, field: 'position');
 ```
+
+### Usage of strictMode 
+
+It's advisable to use `strictMode = false` for smaller radius to make use of documents from neighbouring hashes as well. 
+
+As the radius increases to a large number, the neighbouring hash precisions fetch documents which would be considerably far from the radius bounds, hence its advisable to use `strictMode = true` for larger radius.
+
+**Note:** filtering for strictMode happens on client side, hence filtering at larger radius is at the expense of making unnecessary document reads.     
 
 ### Make Dynamic Queries the RxDart Way
 
