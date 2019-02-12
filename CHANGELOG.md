@@ -1,3 +1,6 @@
+## 2.0.2
+* added support for filtering documents strictly/easily with respect to radius 
+
 ## 2.0.1+1
 * bumped up the versions of kotlin-plugin and gradle. 
 

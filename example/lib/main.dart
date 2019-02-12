@@ -39,7 +39,7 @@ class _MyAppState extends State<MyApp> {
 //          .where('name', isEqualTo: 'darshan');
       return geo
           .collection(collectionRef: collectionReference)
-          .within(center: center, radius: rad, field: 'position');
+          .within(center: center, radius: rad, field: 'position', strictMode: true);
 
       /*
       ****Example to specify nested object**** 

@@ -79,11 +79,12 @@ class GeoFireCollectionRef {
   Stream<List<DocumentSnapshot>> within(
       {@required GeoFirePoint center,
       @required double radius,
-      @required String field}) {
+      @required String field,
+      bool strictMode = false}) {
     int precision = Util.setPrecision(radius);
     String centerHash = center.hash.substring(0, precision);
-    List<String> area = GeoFirePoint.neighborsOf(hash: centerHash);
-    area.add(centerHash);
+    List<String> area = GeoFirePoint.neighborsOf(hash: centerHash)
+      ..add(centerHash);
 
     var queries = area.map((hash) {
       Query tempQuery = _queryPoint(hash, field);
@@ -95,8 +96,7 @@ class GeoFireCollectionRef {
     var mergedObservable = Observable.merge(queries);
 
     var filtered = mergedObservable.map((List<DocumentSnapshot> list) {
-      var filteredList = list.map((DocumentSnapshot documentSnapshot) {
-
+      var mappedList = list.map((DocumentSnapshot documentSnapshot) {
         // split and fetch geoPoint from the nested Map
         List<String> fieldList = field.split('.');
         var geoPointField = documentSnapshot.data[fieldList[0]];
@@ -109,14 +109,18 @@ class GeoFireCollectionRef {
         documentSnapshot.data['distance'] =
             center.distance(lat: geoPoint.latitude, lng: geoPoint.longitude);
         return documentSnapshot;
-      }).where((DocumentSnapshot doc) {
-        double distance = doc.data['distance'];
-        return distance <= radius * 1.02; // buffer for edge distances;
-      }).toList();
+      });
+
+      var filteredList = strictMode
+          ? mappedList.where((DocumentSnapshot doc) {
+              double distance = doc.data['distance'];
+              return distance <= radius * 1.02; // buffer for edge distances;
+            }).toList()
+          : mappedList.toList();
       filteredList.sort((a, b) {
-        double distA = a.data['distance'] * 1000 * 1000;
-        double distB = b.data['distance'] * 1000 * 1000;
-        int val = distA.toInt() - distB.toInt();
+        double distA = a.data['distance'];
+        double distB = b.data['distance'];
+        int val = (distA * 1000).toInt() - (distB * 1000).toInt();
         return val;
       });
       return filteredList;

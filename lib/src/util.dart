@@ -265,7 +265,8 @@ class Util {
             cos(_toRadians(lat2)) *
             sin(lonDelta / 2) *
             sin(lonDelta / 2));
-    return radius * 2 * atan2(sqrt(a), sqrt(1 - a)) / 1000;
+    double distance = radius * 2 * atan2(sqrt(a), sqrt(1 - a)) / 1000;
+    return double.parse(distance.toStringAsFixed(3));
   }
 
   static double _toRadians(double num) {
