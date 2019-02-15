@@ -1,4 +1,4 @@
-# GeoFlutterFire
+# GeoFlutterFire :earth_africa:
 
 GeoFlutterFire is an open-source library that allows you to store and query a set of keys based on their geographic location. At its heart, GeoFlutterFire simply stores locations with string keys. Its main benefit, however, is the possibility of retrieving only those keys within a given geographic area - all in realtime.
 
@@ -9,6 +9,7 @@ GeoFlutterFire is designed as a lightweight add-on to cloud_firestore plugin. To
 
 Heavily influenced by [GeoFireX](https://github.com/codediodeio/geofirex) :fire::fire: from [Jeff Delaney](https://github.com/codediodeio) :sunglasses:
 
+:tv: Checkout this amazing tutorial on [fireship](https://fireship.io/lessons/flutter-realtime-geolocation-firebase/) by Jeff, featuring the plugin!!
 
 ## Getting Started
 
