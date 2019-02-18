@@ -37,9 +37,8 @@ class _MyAppState extends State<MyApp> {
     stream = radius.switchMap((rad) {
       var collectionReference = _firestore.collection('locations');
 //          .where('name', isEqualTo: 'darshan');
-      return geo
-          .collection(collectionRef: collectionReference)
-          .within(center: center, radius: rad, field: 'position', strictMode: true);
+      return geo.collection(collectionRef: collectionReference).within(
+          center: center, radius: rad, field: 'position', strictMode: true);
 
       /*
       ****Example to specify nested object**** 
@@ -102,7 +101,7 @@ class _MyAppState extends State<MyApp> {
                 child: Slider(
                   min: 1,
                   max: 200,
-                  divisions: 4,
+                  divisions: 8,
                   value: _value,
                   label: _label,
                   activeColor: Colors.blue,
@@ -213,10 +212,11 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void _addMarker(double lat, double lng) {
+  void _addMarker(double lat, double lng, String distance) {
     var _marker = MarkerOptions(
       position: LatLng(lat, lng),
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
+      infoWindowText: InfoWindowText('distance :', distance),
     );
     setState(() {
       _mapController.addMarker(_marker);
@@ -226,7 +226,7 @@ class _MyAppState extends State<MyApp> {
   void _updateMarkers(List<DocumentSnapshot> documentList) {
     documentList.forEach((DocumentSnapshot document) {
       GeoPoint point = document.data['position']['geopoint'];
-      _addMarker(point.latitude, point.longitude);
+      _addMarker(point.latitude, point.longitude, document.data['distance'].toString());
     });
   }
 

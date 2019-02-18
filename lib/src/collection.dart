@@ -83,7 +83,7 @@ class GeoFireCollectionRef {
       bool strictMode = false}) {
     int precision = Util.setPrecision(radius);
     String centerHash = center.hash.substring(0, precision);
-    List<String> area = GeoFirePoint.neighborsOf(hash: centerHash)
+    List<String> area = GeoFirePoint.neighborsOf(hash: centerHash, center: center, radius: radius)
       ..add(centerHash);
 
     var queries = area.map((hash) {

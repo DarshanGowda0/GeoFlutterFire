@@ -15,8 +15,8 @@ class GeoFirePoint {
   }
 
   /// return neighboring geo-hashes of [hash]
-  static List<String> neighborsOf({@required String hash}) {
-    return _util.neighbors(hash);
+  static List<String> neighborsOf({@required String hash, @required GeoFirePoint center ,@required double radius}) {
+    return _util.neighbors(hash, center.coords, radius);
   }
 
   /// return hash of [GeoFirePoint]
@@ -25,9 +25,9 @@ class GeoFirePoint {
   }
 
   /// return all neighbors of [GeoFirePoint]
-  List<String> get neighbors {
-    return _util.neighbors(this.hash);
-  }
+//  List<String> get neighbors {
+//    return _util.neighbors(this.hash);
+//  }
 
   /// return [GeoPoint] of [GeoFirePoint]
   GeoPoint get geoPoint {

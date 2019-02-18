@@ -4,10 +4,12 @@ import 'package:geoflutterfire/src/point.dart';
 class Util {
   static const BASE32_CODES = '0123456789bcdefghjkmnpqrstuvwxyz';
   Map<String, int> base32CodesDic = new Map();
+  static var base32CodesArray = [];
 
   Util() {
     for (var i = 0; i < BASE32_CODES.length; i++) {
       base32CodesDic.putIfAbsent(BASE32_CODES[i], () => i);
+      base32CodesArray.add(BASE32_CODES[i]);
     }
   }
 
@@ -158,13 +160,13 @@ class Util {
   /// 7 0 1
   /// 6 X 2
   /// 5 4 3
-  List<String> neighbors(String hashString) {
+  List<String> neighbors(String hashString, Coordinates coords, double radius) {
     int hashStringLength = hashString.length;
-    var lonlat = decode(hashString);
-    double lat = lonlat['latitude'];
-    double lon = lonlat['longitude'];
-    double latErr = lonlat['latitudeError'] * 2;
-    double lonErr = lonlat['longitudeError'] * 2;
+    var latLng = decode(hashString);
+    double lat = latLng['latitude'];
+    double lon = latLng['longitude'];
+    double latErr = latLng['latitudeError'] * 2;
+    double lonErr = latLng['longitudeError'] * 2;
 
     var neighborLat, neighborLon;
 
@@ -185,7 +187,21 @@ class Util {
       encodeNeighbor(1, -1)
     ];
 
-    return neighborHashList;
+    List<String> filteredHashList = [];
+
+    neighborHashList.forEach((hash) {
+      var preciseHashes = base32CodesArray.map((singleChar) {
+        return hash + singleChar;
+      }).where((preciseHash) {
+        var latLng = decode(preciseHash);
+        var distanceFromCenter = distance(
+            coords, Coordinates(latLng['latitude'], latLng['longitude']));
+        return distanceFromCenter <= radius ;
+      }).toList();
+      filteredHashList.addAll(preciseHashes);
+    });
+
+    return filteredHashList;
   }
 
   static int setPrecision(double km) {
