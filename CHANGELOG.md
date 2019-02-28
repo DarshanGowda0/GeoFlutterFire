@@ -1,3 +1,6 @@
+## 2.0.3
+* added a bug-fix for supporting stream builders 
+
 ## 2.0.2
 * added support for filtering documents strictly/easily with respect to radius 
 
