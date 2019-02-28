@@ -3,6 +3,7 @@ import 'package:geoflutterfire/src/point.dart';
 import 'package:meta/meta.dart';
 import 'util.dart';
 import 'package:rxdart/rxdart.dart';
+import 'dart:async';
 
 class GeoFireCollectionRef {
   Query _collectionReference;
@@ -93,9 +94,15 @@ class GeoFireCollectionRef {
       });
     });
 
-    var mergedObservable = Observable.merge(queries);
+    var mergedObservable = Observable.combineLatestList(queries);
 
-    var filtered = mergedObservable.map((List<DocumentSnapshot> list) {
+    var filtered =
+        mergedObservable.map((List<List<DocumentSnapshot>> originalList) {
+
+      // reduce the list to 1D
+      var list = originalList.reduce((acc, cur) => acc ?? <DocumentSnapshot>[]
+        ..addAll(cur));
+
       var mappedList = list.map((DocumentSnapshot documentSnapshot) {
         // split and fetch geoPoint from the nested Map
         List<String> fieldList = field.split('.');
