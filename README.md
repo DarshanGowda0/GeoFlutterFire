@@ -1,5 +1,15 @@
 # GeoFlutterFire :earth_africa:
 
+[![version][version-badge]][package]
+[![MIT License][license-badge]][license]
+<a href="https://github.com/Solido/awesome-flutter">
+   <img alt="Awesome Flutter" src="https://img.shields.io/badge/Awesome-Flutter-blue.svg?longCache=true&style=flat-square" />
+</a>
+[![PRs Welcome][prs-badge]](http://makeapullrequest.com)
+
+[![Watch on GitHub][github-watch-badge]][github-watch]
+[![Star on GitHub][github-star-badge]][github-star]
+
 GeoFlutterFire is an open-source library that allows you to store and query a set of keys based on their geographic location. At its heart, GeoFlutterFire simply stores locations with string keys. Its main benefit, however, is the possibility of retrieving only those keys within a given geographic area - all in realtime.
 
 GeoFlutterFire uses the Firebase Firestore Database for data storage, allowing query results to be updated in realtime as they change. GeoFlutterFire selectively loads only the data near certain locations, keeping your applications light and responsive, even with extremely large datasets.
@@ -204,3 +214,13 @@ stream = radius.switchMap((rad) {
 radius.add(25);
 ```
 
+[version-badge]: https://img.shields.io/pub/vpre/geoflutterfire.svg
+[package]: https://pub.dartlang.org/packages/geoflutterfire
+[license-badge]: https://img.shields.io/github/license/DarshanGowda0/GeoFlutterFire.svg
+[license]: https://github.com/DarshanGowda0/GeoFlutterFire/blob/master/LICENSE
+[prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
+[prs]: http://makeapullrequest.com
+[github-watch-badge]: https://img.shields.io/github/watchers/DarshanGowda0/GeoFlutterFire.svg?style=social
+[github-watch]: https://github.com/DarshanGowda0/GeoFlutterFire/watchers
+[github-star-badge]: https://img.shields.io/github/stars/DarshanGowda0/GeoFlutterFire.svg?style=social
+[github-star]: https://github.com/DarshanGowda0/GeoFlutterFire/stargazers
