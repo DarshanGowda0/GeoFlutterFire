@@ -50,7 +50,7 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 // Init firestore and geoFlutterFire
-Geoflutterfire geo = GeoFlutterFire();
+Geoflutterfire geo = Geoflutterfire();
 Firestore _firestore = Firestore.instance;
 ```
 
