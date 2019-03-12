@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geoflutterfire/src/point.dart';
+import 'package:geoflutterfire_example/streambuilder_test.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -37,18 +38,17 @@ class _MyAppState extends State<MyApp> {
     stream = radius.switchMap((rad) {
       var collectionReference = _firestore.collection('locations');
 //          .where('name', isEqualTo: 'darshan');
-      return geo
-          .collection(collectionRef: collectionReference)
-          .within(center: center, radius: rad, field: 'position', strictMode: true);
+      return geo.collection(collectionRef: collectionReference).within(
+          center: center, radius: rad, field: 'position', strictMode: true);
 
       /*
-      ****Example to specify nested object**** 
-      
+      ****Example to specify nested object****
+
       var collectionReference = _firestore.collection('nestedLocations');
 //          .where('name', isEqualTo: 'darshan');
       return geo.collection(collectionRef: collectionReference).within(
           center: center, radius: rad, field: 'address.location.position');
-          
+
       */
     });
   }
@@ -75,6 +75,14 @@ class _MyAppState extends State<MyApp> {
               icon: Icon(Icons.home),
             )
           ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context){
+              return StreamTestWidget();
+            }));
+          },
+          child: Icon(Icons.navigate_next),
         ),
         body: Container(
           child: Column(
@@ -217,6 +225,7 @@ class _MyAppState extends State<MyApp> {
     var _marker = MarkerOptions(
       position: LatLng(lat, lng),
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
+      infoWindowText: InfoWindowText('latLng', '$lat,$lng'),
     );
     setState(() {
       _mapController.addMarker(_marker);

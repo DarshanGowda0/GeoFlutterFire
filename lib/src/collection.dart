@@ -94,15 +94,16 @@ class GeoFireCollectionRef {
       });
     });
 
-    var mergedObservable = Observable.combineLatestList(queries);
+    var mergedObservable = Observable.combineLatest(queries,
+        (List<List<DocumentSnapshot>> originalList) {
+      var reducedList = <DocumentSnapshot>[];
+      originalList.forEach((t) {
+        reducedList.addAll(t);
+      });
+      return reducedList;
+    });
 
-    var filtered =
-        mergedObservable.map((List<List<DocumentSnapshot>> originalList) {
-
-      // reduce the list to 1D
-      var list = originalList.reduce((acc, cur) => acc ?? <DocumentSnapshot>[]
-        ..addAll(cur));
-
+    var filtered = mergedObservable.map((List<DocumentSnapshot> list) {
       var mappedList = list.map((DocumentSnapshot documentSnapshot) {
         // split and fetch geoPoint from the nested Map
         List<String> fieldList = field.split('.');
