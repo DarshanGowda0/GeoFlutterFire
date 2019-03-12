@@ -1,3 +1,6 @@
+## 2.0.3+1 
+* fixes for breaking changes from 2.0.3 for stream builders
+
 ## 2.0.3
 * added a bug-fix for supporting stream builders 
 
