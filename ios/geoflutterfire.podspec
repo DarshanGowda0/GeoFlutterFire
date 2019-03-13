@@ -5,6 +5,7 @@ Pod::Spec.new do |s|
   s.name             = 'geoflutterfire'
   s.version          = '0.0.1'
   s.summary          = 'A new Flutter plugin.'
+  s.swift_version    = '4.2'
   s.description      = <<-DESC
 A new Flutter plugin.
                        DESC
