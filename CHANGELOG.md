@@ -1,3 +1,6 @@
+## 2.0.3+2 
+* fix for iOS build errors
+
 ## 2.0.3+1 
 * fixes for breaking changes from 2.0.3 for stream builders
 
