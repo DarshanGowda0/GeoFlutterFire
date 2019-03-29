@@ -14,7 +14,7 @@ class _StreamTestWidgetState extends State<StreamTestWidget> {
   Geoflutterfire geo;
 
   // ignore: close_sinks
-  var radius = BehaviorSubject(seedValue: 1.0);
+  var radius = BehaviorSubject.seeded(1.0);
 
   @override
   void initState() {

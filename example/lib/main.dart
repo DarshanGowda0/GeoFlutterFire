@@ -24,7 +24,7 @@ class _MyAppState extends State<MyApp> {
   Firestore _firestore = Firestore.instance;
   Geoflutterfire geo;
   Stream<List<DocumentSnapshot>> stream;
-  var radius = BehaviorSubject(seedValue: 1.0);
+  var radius = BehaviorSubject.seeded(1.0);
 
   @override
   void initState() {
