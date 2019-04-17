@@ -14,7 +14,7 @@ class _StreamTestWidgetState extends State<StreamTestWidget> {
   Geoflutterfire geo;
 
   // ignore: close_sinks
-  var radius = BehaviorSubject(seedValue: 1.0);
+  var radius = BehaviorSubject<double>.seeded(1.0);
 
   @override
   void initState() {
@@ -66,7 +66,6 @@ class _StreamTestWidgetState extends State<StreamTestWidget> {
                 return Center(child: CircularProgressIndicator());
               }
             },
-
           ),
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
