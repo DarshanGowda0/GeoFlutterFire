@@ -24,7 +24,8 @@ class _MyAppState extends State<MyApp> {
   Firestore _firestore = Firestore.instance;
   Geoflutterfire geo;
   Stream<List<DocumentSnapshot>> stream;
-  var radius = BehaviorSubject(seedValue: 1.0);
+  var radius = BehaviorSubject<double>.seeded(1.0);
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
   @override
   void initState() {
@@ -77,7 +78,7 @@ class _MyAppState extends State<MyApp> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context){
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
               return StreamTestWidget();
             }));
           },
@@ -100,6 +101,7 @@ class _MyAppState extends State<MyApp> {
                         target: LatLng(12.960632, 77.641603),
                         zoom: 15.0,
                       ),
+                      markers: Set<Marker>.of(markers.values),
                     ),
                   ),
                 ),
@@ -221,13 +223,15 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _addMarker(double lat, double lng) {
-    var _marker = MarkerOptions(
+    MarkerId id = MarkerId(lat.toString() + lng.toString());
+    Marker _marker = Marker(
+      markerId: id,
       position: LatLng(lat, lng),
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
-      infoWindowText: InfoWindowText('latLng', '$lat,$lng'),
+      infoWindow: InfoWindow(title: 'latLng', snippet: '$lat,$lng'),
     );
     setState(() {
-      _mapController.addMarker(_marker);
+      markers[id] = _marker;
     });
   }
 
@@ -245,7 +249,7 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _value = value;
       _label = '${_value.toInt().toString()} kms';
-      _mapController.clearMarkers();
+      markers.clear();
     });
     radius.add(value);
   }
