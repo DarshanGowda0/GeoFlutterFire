@@ -1,5 +1,5 @@
 ## 2.0.3+4
-* upgarding dependancies Cloud Firestore 0.11.0+1
+* upgrading dependancie Cloud Firestore 0.11.0+1
 
 ## 2.0.3+3
 * upgarding dependancies
