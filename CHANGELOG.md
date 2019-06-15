@@ -1,8 +1,6 @@
-## 2.0.3+4
-* upgrading dependancie Cloud Firestore 0.11.0+1
+## 2.0.3+5
 
-## 2.0.3+3
-* upgarding dependancies
+* upgraded dependencies
 * fix for iOS build errors
 * fixes for breaking changes from 2.0.3 for stream builders
 * added a bug-fix for supporting stream builders 
