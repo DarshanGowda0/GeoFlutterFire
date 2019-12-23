@@ -11,7 +11,6 @@ class GeoFireCollectionRef {
 
   GeoFireCollectionRef(this._collectionReference) : assert(_collectionReference != null) {
     _stream = _collectionReference.snapshots();
-    //_stream = _createStream(_collectionReference).shareReplay(maxSize: 1);
   }
 
   /// return QuerySnapshot stream
@@ -80,7 +79,7 @@ class GeoFireCollectionRef {
 
     var queries = area.map((hash) {
       Query tempQuery = _queryPoint(hash, field);
-      return _createStream(tempQuery).map((QuerySnapshot querySnapshot) {
+      return tempQuery.snapshots().map((QuerySnapshot querySnapshot) {
         return querySnapshot.documents;
       });
     });
@@ -132,10 +131,5 @@ class GeoFireCollectionRef {
     String end = '$geoHash~';
     Query temp = _collectionReference;
     return temp.orderBy('$field.geohash').startAt([geoHash]).endAt([end]);
-  }
-
-  /// create an observable for [ref], [ref] can be [Query] or [CollectionReference]
-  Stream<QuerySnapshot> _createStream(var ref) {
-    return ref.snapshots();
   }
 }
