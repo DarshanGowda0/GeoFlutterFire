@@ -10,7 +10,8 @@ class GeoFireCollectionRef {
   Stream<QuerySnapshot> _stream;
 
   GeoFireCollectionRef(this._collectionReference) : assert(_collectionReference != null) {
-    _stream = _createStream(_collectionReference).shareReplay(maxSize: 1);
+    _stream = _collectionReference.snapshots();
+    //_stream = _createStream(_collectionReference).shareReplay(maxSize: 1);
   }
 
   /// return QuerySnapshot stream
@@ -135,6 +136,6 @@ class GeoFireCollectionRef {
 
   /// create an observable for [ref], [ref] can be [Query] or [CollectionReference]
   Stream<QuerySnapshot> _createStream(var ref) {
-    return Stream.value(ref.snapshots());
+    return ref.snapshots();
   }
 }
