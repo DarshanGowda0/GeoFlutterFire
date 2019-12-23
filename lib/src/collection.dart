@@ -9,8 +9,7 @@ class GeoFireCollectionRef {
   Query _collectionReference;
   Stream<QuerySnapshot> _stream;
 
-  GeoFireCollectionRef(this._collectionReference)
-      : assert(_collectionReference != null) {
+  GeoFireCollectionRef(this._collectionReference) : assert(_collectionReference != null) {
     _stream = _createStream(_collectionReference).shareReplay(maxSize: 1);
   }
 
@@ -35,8 +34,7 @@ class GeoFireCollectionRef {
       CollectionReference colRef = _collectionReference;
       return colRef.add(data);
     } catch (e) {
-      throw Exception(
-          'cannot call add on Query, use collection reference instead');
+      throw Exception('cannot call add on Query, use collection reference instead');
     }
   }
 
@@ -46,8 +44,7 @@ class GeoFireCollectionRef {
       CollectionReference colRef = _collectionReference;
       return colRef.document(id).delete();
     } catch (e) {
-      throw Exception(
-          'cannot call delete on Query, use collection reference instead');
+      throw Exception('cannot call delete on Query, use collection reference instead');
     }
   }
 
@@ -57,35 +54,28 @@ class GeoFireCollectionRef {
       CollectionReference colRef = _collectionReference;
       return colRef.document(id).setData(data, merge: merge);
     } catch (e) {
-      throw Exception(
-          'cannot call set on Query, use collection reference instead');
+      throw Exception('cannot call set on Query, use collection reference instead');
     }
   }
 
   /// set a geo point with [latitude] and [longitude] using [field] as the object key to the document with [id]
-  Future<void> setPoint(
-      String id, String field, double latitude, double longitude) {
+  Future<void> setPoint(String id, String field, double latitude, double longitude) {
     try {
       CollectionReference colRef = _collectionReference;
       var point = GeoFirePoint(latitude, longitude).data;
       return colRef.document(id).setData({'$field': point}, merge: true);
     } catch (e) {
-      throw Exception(
-          'cannot call set on Query, use collection reference instead');
+      throw Exception('cannot call set on Query, use collection reference instead');
     }
   }
 
   /// query firestore documents based on geographic [radius] from geoFirePoint [center]
   /// [field] specifies the name of the key in the document
   Stream<List<DocumentSnapshot>> within(
-      {@required GeoFirePoint center,
-      @required double radius,
-      @required String field,
-      bool strictMode = false}) {
+      {@required GeoFirePoint center, @required double radius, @required String field, bool strictMode = false}) {
     int precision = Util.setPrecision(radius);
     String centerHash = center.hash.substring(0, precision);
-    List<String> area = GeoFirePoint.neighborsOf(hash: centerHash)
-      ..add(centerHash);
+    List<String> area = GeoFirePoint.neighborsOf(hash: centerHash)..add(centerHash);
 
     var queries = area.map((hash) {
       Query tempQuery = _queryPoint(hash, field);
@@ -94,8 +84,7 @@ class GeoFireCollectionRef {
       });
     });
 
-    var mergedObservable = Observable.combineLatest(queries,
-        (List<List<DocumentSnapshot>> originalList) {
+    var mergedObservable = Rx.combineLatest(queries, (List<List<DocumentSnapshot>> originalList) {
       var reducedList = <DocumentSnapshot>[];
       originalList.forEach((t) {
         reducedList.addAll(t);
@@ -114,8 +103,7 @@ class GeoFireCollectionRef {
           }
         }
         GeoPoint geoPoint = geoPointField['geopoint'];
-        documentSnapshot.data['distance'] =
-            center.distance(lat: geoPoint.latitude, lng: geoPoint.longitude);
+        documentSnapshot.data['distance'] = center.distance(lat: geoPoint.latitude, lng: geoPoint.longitude);
         return documentSnapshot;
       });
 
@@ -146,7 +134,7 @@ class GeoFireCollectionRef {
   }
 
   /// create an observable for [ref], [ref] can be [Query] or [CollectionReference]
-  Observable<QuerySnapshot> _createStream(var ref) {
-    return Observable<QuerySnapshot>(ref.snapshots());
+  Stream<QuerySnapshot> _createStream(var ref) {
+    return Stream.value(ref.snapshots());
   }
 }
