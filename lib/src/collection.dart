@@ -94,7 +94,7 @@ class GeoFireCollectionRef {
       });
     });
 
-    var mergedObservable = Observable.combineLatest(queries,
+    var mergedObservable = Rx.combineLatest(queries,
         (List<List<DocumentSnapshot>> originalList) {
       var reducedList = <DocumentSnapshot>[];
       originalList.forEach((t) {
@@ -146,7 +146,7 @@ class GeoFireCollectionRef {
   }
 
   /// create an observable for [ref], [ref] can be [Query] or [CollectionReference]
-  Observable<QuerySnapshot> _createStream(var ref) {
-    return Observable<QuerySnapshot>(ref.snapshots());
+  Stream<QuerySnapshot> _createStream(var ref) {
+    return Stream<QuerySnapshot>.fromFuture(ref.snapshots());
   }
 }
