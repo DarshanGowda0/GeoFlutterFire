@@ -1,4 +1,4 @@
-## 2.0.3+6
+## 2.0.3+7
 
 * upgraded dependencies
 * fix for iOS build errors
