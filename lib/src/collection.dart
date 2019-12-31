@@ -147,6 +147,6 @@ class GeoFireCollectionRef {
 
   /// create an observable for [ref], [ref] can be [Query] or [CollectionReference]
   Stream<QuerySnapshot> _createStream(var ref) {
-    return Stream<QuerySnapshot>.fromFuture(ref.snapshots());
+    return ref.snapshots();
   }
 }
