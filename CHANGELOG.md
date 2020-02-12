@@ -1,3 +1,7 @@
+## 2.1
+* fixed breaking changes
+* would not be able to access data using `doc.data['distance']` anymore
+
 ## 2.0.3+8
 
 * upgraded dependencies
