@@ -83,6 +83,18 @@ class GeoFireCollectionRef {
       @required double radius,
       @required String field,
       bool strictMode = false}) {
+    
+    var stream = withinWithDistance(center: center, radius: radius, field: field, strictMode: strictMode);
+    return stream.map((filteredList) => filteredList.map((element) => element.documentSnapshot).toList());
+  }
+
+    /// query firestore documents based on geographic [radius] from geoFirePoint [center]
+  /// [field] specifies the name of the key in the document
+  Stream<List<DistanceDocSnapshot>> withinWithDistance(
+      {@required GeoFirePoint center,
+      @required double radius,
+      @required String field,
+      bool strictMode = false}) {
     int precision = Util.setPrecision(radius);
     String centerHash = center.hash.substring(0, precision);
     List<String> area = GeoFirePoint.neighborsOf(hash: centerHash)
@@ -124,7 +136,7 @@ class GeoFireCollectionRef {
         int val = (distA * 1000).toInt() - (distB * 1000).toInt();
         return val;
       });
-      return filteredList.map((element) => element.documentSnapshot).toList();
+      return filteredList;
     });
     return filtered.asBroadcastStream();
   }
