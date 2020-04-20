@@ -171,7 +171,7 @@ Example: `var point = geo.point(38, -119)`
 
 ### Scale to Massive Collections
 
-It's possibe to build Firestore collections with billions of documents. One of the main motivations of this project was to make geoqueries possible on a queried subset of data. You can pass a Query instead of a CollectionReference into the collection(), then all geoqueries will be scoped with the contstraints of that query.
+It's possible to build Firestore collections with billions of documents. One of the main motivations of this project was to make geoqueries possible on a queried subset of data. You can pass a Query instead of a CollectionReference into the collection(), then all geoqueries will be scoped with the constraints of that query.
 
 Note: This query requires a composite index, which you will be prompted to create with an error from Firestore on the first request.
 
