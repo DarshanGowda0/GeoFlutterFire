@@ -1,8 +1,7 @@
-.DS_Store
-.dart_tool/
+.*
+!.gitignore
 
-.packages
-.pub/
+*.iml
 pubspec.lock
 
 build/
