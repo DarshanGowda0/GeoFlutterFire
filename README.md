@@ -10,7 +10,6 @@ GeoFlutterFire uses the Firebase Firestore Database for data storage, allowing q
 
 GeoFlutterFire is designed as a lightweight add-on to cloud_firestore plugin. To keep things simple, GeoFlutterFire stores data in its own format within your Firestore database. This allows your existing data format and Security Rules to remain unchanged while still providing you with an easy solution for geo queries.
 
-
 Heavily influenced by [GeoFireX](https://github.com/codediodeio/geofirex) :fire::fire: from [Jeff Delaney](https://github.com/codediodeio) :sunglasses:
 
 :tv: Checkout this amazing tutorial on [fireship](https://fireship.io/lessons/flutter-realtime-geolocation-firebase/) by Jeff, featuring the plugin!!
@@ -18,16 +17,18 @@ Heavily influenced by [GeoFireX](https://github.com/codediodeio/geofirex) :fire:
 ## Getting Started
 
 You should ensure that you add GeoFlutterFire as a dependency in your flutter project.
+
 ```yaml
 dependencies:
-    geoflutterfire: <latest-version>
+  geoflutterfire: <latest-version>
 ```
 
 You can also reference the git repo directly if you want:
+
 ```yaml
 dependencies:
-    geoflutterfire:
-        git: git://github.com/DarshanGowda0/GeoFlutterFire.git
+  geoflutterfire:
+    git: git://github.com/DarshanGowda0/GeoFlutterFire.git
 ```
 
 You should then run `flutter packages get` or update your packages in IntelliJ.
@@ -39,21 +40,26 @@ There is a detailed example project in the `example` folder. Check that out or k
 ## Initialize
 
 You need a firebase project with [Firestore](https://pub.dartlang.org/packages/cloud_firestore) setup.
+
 ```dart
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 // Init firestore and geoFlutterFire
-Geoflutterfire geo = Geoflutterfire();
-Firestore _firestore = Firestore.instance;
+final geo = Geoflutterfire();
+final _firestore = FirebaseFirestore.instance;
 ```
 
 ## Writing Geo data
+
 Add geo data to your firestore document using `GeoFirePoint`
+
 ```dart
 GeoFirePoint myLocation = geo.point(latitude: 12.960632, longitude: 77.641603);
 ```
+
 Next, add the GeoFirePoint to you document using Firestore's add method
+
 ```dart
  _firestore
         .collection('locations')
@@ -65,7 +71,9 @@ Calling `geoFirePoint.data` returns an object that contains a [geohash string](h
 ![](https://firebasestorage.googleapis.com/v0/b/geo-test-c92e4.appspot.com/o/point1.png?alt=media&token=0c833700-3dbd-476a-99a9-41c1143dbe97)
 
 ## Query Geo data
+
 To query a collection of documents with 50kms from a point
+
 ```dart
 // Create a geoFirePoint
 GeoFirePoint center = geo.point(latitude: 12.960632, longitude: 77.641603);
@@ -81,6 +89,7 @@ Stream<List<DocumentSnapshot>> stream = geo.collection(collectionRef: collection
 ```
 
 The within function returns a Stream of the list of DocumentSnapshot data, plus some useful metadata like distance from the centerpoint.
+
 ```dart
 stream.listen((List<DocumentSnapshot> documentList) {
         // doSomething()
@@ -89,8 +98,6 @@ stream.listen((List<DocumentSnapshot> documentList) {
 
 You now have a realtime stream of data to visualize on a map.
 ![](https://firebasestorage.googleapis.com/v0/b/geoflutterfire.appspot.com/o/geflutterfire.gif?alt=media&token=8dc3aa9c-ee68-4dfe-9093-c3c1c48979dc)
-
-
 
 ## :notebook: API
 
@@ -106,6 +113,7 @@ Example:
 var collectionReference = _firestore.collection('locations');
 var geoRef = geo.collection(collectionRef: collectionReference);
 ```
+
 Note: collectionReference can be of type CollectionReference or Query
 
 #### Performing Geo-Queries
@@ -116,10 +124,9 @@ Query the parent Firestore collection by geographic distance. It will return doc
 `field` supports nested objects in the firestore document.
 
 **Note:** Use optional parameter `strictMode = true` to filter the documents strictly within the bound of given radius.
-  
-
 
 Example:
+
 ```dart
 // For GeoFirePoint stored at the root of the firestore document
 geoRef.within(center: centerGeoPoint, radius: 50, field: 'position', strictMode: true);
@@ -128,10 +135,9 @@ geoRef.within(center: centerGeoPoint, radius: 50, field: 'position', strictMode:
 geoRef.within(center: centerGeoPoint, radius: 50, field: 'address.location.position', strictMode: true);
 ```
 
-Each `documentSnapshot.data` also contains `distance` calculated on the query.
+Each `documentSnapshot.data()` also contains `distance` calculated on the query.
 
 **Returns:** `Stream<List<DocumentSnapshot>>`
-
 
 #### Write Data
 
@@ -184,13 +190,13 @@ var stream = geo
               .within(center: center, radius: rad, field: 'position');
 ```
 
-### Usage of strictMode 
+### Usage of strictMode
 
-It's advisable to use `strictMode = false` for smaller radius to make use of documents from neighbouring hashes as well. 
+It's advisable to use `strictMode = false` for smaller radius to make use of documents from neighbouring hashes as well.
 
 As the radius increases to a large number, the neighbouring hash precisions fetch documents which would be considerably far from the radius bounds, hence its advisable to use `strictMode = true` for larger radius.
 
-**Note:** filtering for strictMode happens on client side, hence filtering at larger radius is at the expense of making unnecessary document reads.     
+**Note:** filtering for strictMode happens on client side, hence filtering at larger radius is at the expense of making unnecessary document reads.
 
 ### Make Dynamic Queries the RxDart Way
 
@@ -211,7 +217,7 @@ radius.add(25);
 ### Limitations
 
 - range queries on multiple fields is not suppoerted by cloud_firestore at the moment, since this library already uses range query on `geohash` field, you cannot perform range queries with `GeoFireCollectionRef`.
-- `limit()` and `orderBy()` are not supported at the moment. `limit()` could be used to limit docs inside each hash individually which would result in running limit on all 9 hashes inside the specified radius. `orderBy()` is first run on   `geohashes` in the library, hence appending `orderBy()` with another feild wouldn't produce expected results. Alternatively documents can be sorted on client side.
+- `limit()` and `orderBy()` are not supported at the moment. `limit()` could be used to limit docs inside each hash individually which would result in running limit on all 9 hashes inside the specified radius. `orderBy()` is first run on `geohashes` in the library, hence appending `orderBy()` with another feild wouldn't produce expected results. Alternatively documents can be sorted on client side.
 
 [version-badge]: https://img.shields.io/pub/vpre/geoflutterfire.svg
 [package]: https://pub.dartlang.org/packages/geoflutterfire

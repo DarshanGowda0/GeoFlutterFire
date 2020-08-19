@@ -21,10 +21,10 @@ class _MyAppState extends State<MyApp> {
   TextEditingController _latitudeController, _longitudeController;
 
   // firestore init
-  Firestore _firestore = Firestore.instance;
+  final _firestore = FirebaseFirestore.instance;
   Geoflutterfire geo;
   Stream<List<DocumentSnapshot>> stream;
-  var radius = BehaviorSubject<double>.seeded(1.0);
+  final radius = BehaviorSubject<double>.seeded(1.0);
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
   @override
@@ -55,12 +55,15 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
-    super.dispose();
+    _latitudeController.dispose();
+    _longitudeController.dispose();
     radius.close();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -93,8 +96,8 @@ class _MyAppState extends State<MyApp> {
                   elevation: 4,
                   margin: EdgeInsets.symmetric(vertical: 8),
                   child: SizedBox(
-                    width: MediaQuery.of(context).size.width - 30,
-                    height: MediaQuery.of(context).size.height * (1 / 3),
+                    width: mediaQuery.size.width - 30,
+                    height: mediaQuery.size.height * (1 / 3),
                     child: GoogleMap(
                       onMapCreated: _onMapCreated,
                       initialCameraPosition: const CameraPosition(
@@ -150,11 +153,11 @@ class _MyAppState extends State<MyApp> {
                   MaterialButton(
                     color: Colors.blue,
                     onPressed: () {
-                      double lat = double.parse(_latitudeController.text);
-                      double lng = double.parse(_longitudeController.text);
+                      final lat = double.parse(_latitudeController.text);
+                      final lng = double.parse(_longitudeController.text);
                       _addPoint(lat, lng);
                     },
-                    child: Text(
+                    child: const Text(
                       'ADD',
                       style: TextStyle(color: Colors.white),
                     ),
@@ -163,13 +166,13 @@ class _MyAppState extends State<MyApp> {
               ),
               MaterialButton(
                 color: Colors.amber,
-                child: Text(
+                child: const Text(
                   'Add nested ',
                   style: TextStyle(color: Colors.white),
                 ),
                 onPressed: () {
-                  double lat = double.parse(_latitudeController.text);
-                  double lng = double.parse(_longitudeController.text);
+                  final lat = double.parse(_latitudeController.text);
+                  final lng = double.parse(_longitudeController.text);
                   _addNestedPoint(lat, lng);
                 },
               )
@@ -223,8 +226,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _addMarker(double lat, double lng) {
-    MarkerId id = MarkerId(lat.toString() + lng.toString());
-    Marker _marker = Marker(
+    final id = MarkerId(lat.toString() + lng.toString());
+    final _marker = Marker(
       markerId: id,
       position: LatLng(lat, lng),
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
@@ -237,7 +240,7 @@ class _MyAppState extends State<MyApp> {
 
   void _updateMarkers(List<DocumentSnapshot> documentList) {
     documentList.forEach((DocumentSnapshot document) {
-      GeoPoint point = document.data['position']['geopoint'];
+      final GeoPoint point = document.data()['position']['geopoint'];
       _addMarker(point.latitude, point.longitude);
     });
   }
