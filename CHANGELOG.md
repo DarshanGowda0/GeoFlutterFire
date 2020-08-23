@@ -1,9 +1,11 @@
+## 2.2.1
+* upgraded dependencies
+
 ## 2.1.0
 * fixed breaking changes
 * would not be able to access data using `doc.data['distance']` anymore
 
 ## 2.0.3+8
-
 * upgraded dependencies
 * fix for iOS build errors
 * fixes for breaking changes from 2.0.3 for stream builders

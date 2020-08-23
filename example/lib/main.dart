@@ -4,12 +4,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'streambuilder_test.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() => runApp(MaterialApp(
-      title: 'Geo Flutter Fire example',
-      home: MyApp(),
-      debugShowCheckedModeBanner: false,
-    ));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MaterialApp(
+    title: 'Geo Flutter Fire example',
+    home: MyApp(),
+    debugShowCheckedModeBanner: false,
+  ));
+}
 
 class MyApp extends StatefulWidget {
   @override
