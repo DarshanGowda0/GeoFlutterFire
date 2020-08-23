@@ -1,4 +1,5 @@
-import 'package:meta/meta.dart';
+import 'package:flutter/foundation.dart';
+
 import 'util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 

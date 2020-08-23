@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:geoflutterfire/src/models/DistanceDocSnapshot.dart';
 import 'package:geoflutterfire/src/point.dart';
-import 'package:meta/meta.dart';
 import 'util.dart';
 import 'package:rxdart/rxdart.dart';
 import 'dart:async';

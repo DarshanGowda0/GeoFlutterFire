@@ -19,7 +19,7 @@
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
         <!-- TODO: Add your Google Map API Key -->
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAUm8ZkosVBkTeQxe_9NMLKDukUvP2a7IE"/>
+            android:value="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
