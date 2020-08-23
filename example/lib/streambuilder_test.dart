@@ -10,8 +10,8 @@ class StreamTestWidget extends StatefulWidget {
 
 class _StreamTestWidgetState extends State<StreamTestWidget> {
   Stream<List<DocumentSnapshot>> stream;
-  Firestore _firestore = Firestore.instance;
-  Geoflutterfire geo;
+  final _firestore = FirebaseFirestore.instance;
+  final geo = Geoflutterfire();
 
   // ignore: close_sinks
   var radius = BehaviorSubject<double>.seeded(1.0);
@@ -19,8 +19,7 @@ class _StreamTestWidgetState extends State<StreamTestWidget> {
   @override
   void initState() {
     super.initState();
-    geo = Geoflutterfire();
-    GeoFirePoint center = geo.point(latitude: 12.960632, longitude: 77.641603);
+    final center = geo.point(latitude: 12.960632, longitude: 77.641603);
     stream = radius.switchMap((rad) {
       var collectionReference = _firestore.collection('locations');
       return geo.collection(collectionRef: collectionReference).within(
@@ -45,25 +44,26 @@ class _StreamTestWidgetState extends State<StreamTestWidget> {
                   height: MediaQuery.of(context).size.height * 2 / 3,
                   child: ListView.builder(
                     itemBuilder: (context, index) {
-                      DocumentSnapshot doc = snapshots.data[index];
+                      final doc = snapshots.data[index];
+                      final data = doc.data();
                       print(
-                          'doc with id ${doc.documentID} distance ${doc.data['distance']}');
-                      GeoPoint point = doc.data['position']['geopoint'];
+                          'doc with id ${doc.id} distance ${data['distance']}');
+                      GeoPoint point = data['position']['geopoint'];
                       return ListTile(
                         title: Text(
-                          '${doc.documentID}',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          doc.id,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         subtitle: Text('${point.latitude}, ${point.longitude}'),
                         trailing: Text(
-                            '${doc.data['documentType'] == DocumentChangeType.added ? 'Added' : 'Modified'}'),
+                            '${data['documentType'] == DocumentChangeType.added ? 'Added' : 'Modified'}'),
                       );
                     },
                     itemCount: snapshots.data.length,
                   ),
                 );
               } else {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               }
             },
           ),

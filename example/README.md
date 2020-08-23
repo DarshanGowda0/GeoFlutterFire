@@ -9,34 +9,34 @@ Demonstrates how to use the geoflutterfire plugin.
    import 'package:geoflutterfire/src/point.dart';
    import 'package:google_maps_flutter/google_maps_flutter.dart';
    import 'package:rxdart/rxdart.dart';
-   
+
    void main() => runApp(MaterialApp(
          title: 'Geo Flutter Fire example',
          home: MyApp(),
          debugShowCheckedModeBanner: false,
        ));
-   
+
    class MyApp extends StatefulWidget {
      @override
      _MyAppState createState() => _MyAppState();
    }
-   
+
    class _MyAppState extends State<MyApp> {
      GoogleMapController _mapController;
      TextEditingController _latitudeController, _longitudeController;
-   
+
      // firestore init
-     Firestore _firestore = Firestore.instance;
+     final _firestore = FirebaseFirestore.instance;
      Geoflutterfire geo;
      Stream<List<DocumentSnapshot>> stream;
      var radius = BehaviorSubject(seedValue: 1.0);
-   
+
      @override
      void initState() {
        super.initState();
        _latitudeController = TextEditingController();
        _longitudeController = TextEditingController();
-   
+
        geo = Geoflutterfire();
        GeoFirePoint center = geo.point(latitude: 12.960632, longitude: 77.641603);
        stream = radius.switchMap((rad) {
@@ -45,25 +45,25 @@ Demonstrates how to use the geoflutterfire plugin.
          return geo
              .collection(collectionRef: collectionReference)
              .within(center: center, radius: rad, field: 'position');
-   
+
          /*
-         ****Example to specify nested object**** 
-         
+         ****Example to specify nested object****
+
          var collectionReference = _firestore.collection('nestedLocations');
    //          .where('name', isEqualTo: 'darshan');
          return geo.collection(collectionRef: collectionReference).within(
              center: center, radius: rad, field: 'address.location.position');
-             
+
          */
        });
      }
-   
+
      @override
      void dispose() {
        super.dispose();
        radius.close();
      }
-   
+
      @override
      Widget build(BuildContext context) {
        return MaterialApp(
@@ -175,7 +175,7 @@ Demonstrates how to use the geoflutterfire plugin.
          ),
        );
      }
-   
+
      void _onMapCreated(GoogleMapController controller) {
        setState(() {
          _mapController = controller;
@@ -186,7 +186,7 @@ Demonstrates how to use the geoflutterfire plugin.
          });
        });
      }
-   
+
      void _showHome() {
        _mapController.animateCamera(CameraUpdate.newCameraPosition(
          const CameraPosition(
@@ -195,7 +195,7 @@ Demonstrates how to use the geoflutterfire plugin.
          ),
        ));
      }
-   
+
      void _addPoint(double lat, double lng) {
        GeoFirePoint geoFirePoint = geo.point(latitude: lat, longitude: lng);
        _firestore
@@ -204,7 +204,7 @@ Demonstrates how to use the geoflutterfire plugin.
          print('added ${geoFirePoint.hash} successfully');
        });
      }
-   
+
      //example to add geoFirePoint inside nested object
      void _addNestedPoint(double lat, double lng) {
        GeoFirePoint geoFirePoint = geo.point(latitude: lat, longitude: lng);
@@ -217,7 +217,7 @@ Demonstrates how to use the geoflutterfire plugin.
          print('added ${geoFirePoint.hash} successfully');
        });
      }
-   
+
      void _addMarker(double lat, double lng) {
        var _marker = MarkerOptions(
          position: LatLng(lat, lng),
@@ -227,17 +227,17 @@ Demonstrates how to use the geoflutterfire plugin.
          _mapController.addMarker(_marker);
        });
      }
-   
+
      void _updateMarkers(List<DocumentSnapshot> documentList) {
        documentList.forEach((DocumentSnapshot document) {
          GeoPoint point = document.data['position']['geopoint'];
          _addMarker(point.latitude, point.longitude);
        });
      }
-   
+
      double _value = 20.0;
      String _label = '';
-   
+
      changed(value) {
        setState(() {
          _value = value;
