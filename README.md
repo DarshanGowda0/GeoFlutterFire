@@ -82,7 +82,7 @@ GeoFirePoint center = geo.point(latitude: 12.960632, longitude: 77.641603);
 var collectionReference = _firestore.collection('locations');
 
 double radius = 50;
-int limit = 20;
+int limit = 20;  //Set the number of results to limit
 String field = 'position';
 
 Stream<List<DocumentSnapshot>> stream = geo.collection(collectionRef: collectionReference, limitby: limit)
