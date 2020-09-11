@@ -207,7 +207,7 @@ var collectionReference = _firestore.collection('locations');
 
 stream = radius.switchMap((rad) {
       return geo
-          .collection(collectionRef: collectionReference)
+          .collection(collectionRef: collectionReference, limitby: limit)
           .within(center: center, radius: rad, field: 'position');
     });
 
