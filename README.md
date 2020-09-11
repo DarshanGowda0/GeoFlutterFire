@@ -112,7 +112,7 @@ Example:
 // Collection ref
 // var collectionReference = _firestore.collection('locations').where('city', isEqualTo: 'bangalore');
 var collectionReference = _firestore.collection('locations');
-var geoRef = geo.collection(collectionRef: collectionReference);
+var geoRef = geo.collection(collectionRef: collectionReference, limitby: limit);
 ```
 
 Note: collectionReference can be of type CollectionReference or Query
@@ -187,7 +187,7 @@ Example:
 ```dart
 var queryRef = _firestore.collection('locations').where('city', isEqualTo: 'bangalore');
 var stream = geo
-              .collection(collectionRef: queryRef)
+              .collection(collectionRef: queryRef, limitby: limit)
               .within(center: center, radius: rad, field: 'position');
 ```
 
