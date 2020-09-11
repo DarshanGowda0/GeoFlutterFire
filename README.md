@@ -28,7 +28,7 @@ You can also reference the git repo directly if you want:
 ```yaml
 dependencies:
   geoflutterfire:
-    git: git://github.com/Matthuffy/GeoFlutterFire.git
+    git: git://github.com/DarshanGowda0/GeoFlutterFire.git
 ```
 
 You should then run `flutter packages get` or update your packages in IntelliJ.
@@ -227,6 +227,6 @@ radius.add(25);
 [prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
 [prs]: http://makeapullrequest.com
 [github-watch-badge]: https://img.shields.io/github/watchers/DarshanGowda0/GeoFlutterFire.svg?style=social
-[github-watch]: https://github.com/Matthuffy/GeoFlutterFire/watchers
+[github-watch]: https://github.com/DarshanGowda0/GeoFlutterFire/watchers
 [github-star-badge]: https://img.shields.io/github/stars/DarshanGowda0/GeoFlutterFire.svg?style=social
-[github-star]: https://github.com/Matthuffy/GeoFlutterFire/stargazers
+[github-star]: https://github.com/DarshanGowda0/GeoFlutterFire/stargazers
