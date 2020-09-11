@@ -28,7 +28,7 @@ You can also reference the git repo directly if you want:
 ```yaml
 dependencies:
   geoflutterfire:
-    git: git://github.com/DarshanGowda0/GeoFlutterFire.git
+    git: git://github.com/Matthuffy/GeoFlutterFire.git
 ```
 
 You should then run `flutter packages get` or update your packages in IntelliJ.
@@ -217,7 +217,7 @@ radius.add(25);
 ### Limitations
 
 - range queries on multiple fields is not suppoerted by cloud_firestore at the moment, since this library already uses range query on `geohash` field, you cannot perform range queries with `GeoFireCollectionRef`.
-- `limit()` and `orderBy()` are not supported at the moment. `limit()` could be used to limit docs inside each hash individually which would result in running limit on all 9 hashes inside the specified radius. `orderBy()` is first run on `geohashes` in the library, hence appending `orderBy()` with another feild wouldn't produce expected results. Alternatively documents can be sorted on client side.
+- `orderBy()` is not supported at the moment. `orderBy()` is first run on `geohashes` in the library, hence appending `orderBy()` with another feild wouldn't produce expected results. Alternatively documents can be sorted on client side.
 
 [version-badge]: https://img.shields.io/pub/vpre/geoflutterfire.svg
 [package]: https://pub.dartlang.org/packages/geoflutterfire
@@ -226,6 +226,6 @@ radius.add(25);
 [prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
 [prs]: http://makeapullrequest.com
 [github-watch-badge]: https://img.shields.io/github/watchers/DarshanGowda0/GeoFlutterFire.svg?style=social
-[github-watch]: https://github.com/DarshanGowda0/GeoFlutterFire/watchers
+[github-watch]: https://github.com/Matthuffy/GeoFlutterFire/watchers
 [github-star-badge]: https://img.shields.io/github/stars/DarshanGowda0/GeoFlutterFire.svg?style=social
-[github-star]: https://github.com/DarshanGowda0/GeoFlutterFire/stargazers
+[github-star]: https://github.com/Matthuffy/GeoFlutterFire/stargazers
