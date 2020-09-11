@@ -22,7 +22,7 @@ class _StreamTestWidgetState extends State<StreamTestWidget> {
     final center = geo.point(latitude: 12.960632, longitude: 77.641603);
     stream = radius.switchMap((rad) {
       var collectionReference = _firestore.collection('locations');
-      return geo.collection(collectionRef: collectionReference).within(
+      return geo.collection(collectionRef: collectionReference, limitby: 20).within(
           center: center, radius: rad, field: 'position', strictMode: true);
     });
   }

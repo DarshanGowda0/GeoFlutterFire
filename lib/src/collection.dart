@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:geoflutterfire/src/models/DistanceDocSnapshot.dart';
-import 'package:geoflutterfire/src/point.dart';
+import './models/DistanceDocSnapshot.dart';
+import 'point.dart';
 import 'util.dart';
 import 'package:rxdart/rxdart.dart';
 import 'dart:async';
@@ -9,9 +9,10 @@ import 'dart:async';
 class GeoFireCollectionRef {
   Query _collectionReference;
   Stream<QuerySnapshot> _stream;
-
-  GeoFireCollectionRef(this._collectionReference)
+  int setlimitby;
+  GeoFireCollectionRef(this._collectionReference, int limitby)
       : assert(_collectionReference != null) {
+    setlimitby = limitby;
     _stream = _createStream(_collectionReference).shareReplay(maxSize: 1);
   }
 
@@ -155,7 +156,9 @@ class GeoFireCollectionRef {
   Query _queryPoint(String geoHash, String field) {
     final end = '$geoHash~';
     final temp = _collectionReference;
-    return temp.orderBy('$field.geohash').startAt([geoHash]).endAt([end]);
+    return temp
+        .orderBy('$field.geohash')
+        .startAt([geoHash]).endAt([end]).limit(setlimitby);
   }
 
   /// create an observable for [ref], [ref] can be [Query] or [CollectionReference]
