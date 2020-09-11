@@ -84,7 +84,7 @@ var collectionReference = _firestore.collection('locations');
 double radius = 50;
 String field = 'position';
 
-Stream<List<DocumentSnapshot>> stream = geo.collection(collectionRef: collectionReference)
+Stream<List<DocumentSnapshot>> stream = geo.collection(collectionRef: collectionReference, limitby: 20)
                                         .within(center: center, radius: radius, field: field);
 ```
 
