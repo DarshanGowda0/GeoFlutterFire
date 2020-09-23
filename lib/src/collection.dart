@@ -20,16 +20,6 @@ class GeoFireCollectionRef {
     return _stream;
   }
 
-  /// return the Document mapped to the [id]
-  Stream<List<DocumentSnapshot>> data(String id) {
-    return _stream.map((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.where((DocumentSnapshot documentSnapshot) {
-        return documentSnapshot.id == id;
-      });
-      return querySnapshot.docs;
-    });
-  }
-
   /// add a document to collection with [data]
   Future<DocumentReference> add(Map<String, dynamic> data) {
     try {
