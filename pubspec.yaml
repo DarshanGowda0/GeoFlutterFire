@@ -12,12 +12,3 @@ dependencies:
     sdk: flutter
   cloud_firestore: ^0.14.0+2
   rxdart: ^0.24.1
-
-flutter:
-  plugin:
-    platforms:
-      android:
-        package: com.noeatsleepdev.geoflutterfire
-        pluginClass: GeoflutterfirePlugin
-      ios:
-        pluginClass: GeoflutterfirePlugin
