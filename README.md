@@ -2,7 +2,7 @@
 
 [![version][version-badge]][package]
 [![MIT License][license-badge]][license]
-[![PRs Welcome][prs-badge]](http://makeapullrequest.com)
+[![PRs Welcome][prs-badge]](https://makeapullrequest.com)
 
 GeoFlutterFire is an open-source library that allows you to store and query a set of keys based on their geographic location. At its heart, GeoFlutterFire simply stores locations with string keys. Its main benefit, however, is the possibility of retrieving only those keys within a given geographic area - all in realtime.
 
