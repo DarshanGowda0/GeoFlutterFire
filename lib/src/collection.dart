@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:geoflutterfire/src/models/DistanceDocSnapshot.dart';
-import 'package:geoflutterfire/src/point.dart';
-import 'util.dart';
 import 'package:rxdart/rxdart.dart';
-import 'dart:async';
+
+import 'models/DistanceDocSnapshot.dart';
+import 'point.dart';
+import 'util.dart';
 
 class GeoFireCollectionRef {
   Query _collectionReference;

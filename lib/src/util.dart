@@ -1,5 +1,6 @@
 import 'dart:math';
-import 'package:geoflutterfire/src/point.dart';
+
+import 'point.dart';
 
 class Util {
   static const BASE32_CODES = '0123456789bcdefghjkmnpqrstuvwxyz';
