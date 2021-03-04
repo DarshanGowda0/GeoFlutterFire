@@ -1,17 +1,17 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:geoflutterfire/src/models/DistanceDocSnapshot.dart';
 import 'package:geoflutterfire/src/point.dart';
-import 'util.dart';
 import 'package:rxdart/rxdart.dart';
-import 'dart:async';
+
+import 'util.dart';
 
 class GeoFireCollectionRef {
   Query _collectionReference;
-  Stream<QuerySnapshot> _stream;
+  late Stream<QuerySnapshot> _stream;
 
-  GeoFireCollectionRef(this._collectionReference)
-      : assert(_collectionReference != null) {
+  GeoFireCollectionRef(this._collectionReference) {
     _stream = _createStream(_collectionReference).shareReplay(maxSize: 1);
   }
 
@@ -32,56 +32,48 @@ class GeoFireCollectionRef {
 
   /// add a document to collection with [data]
   Future<DocumentReference> add(Map<String, dynamic> data) {
-    try {
-      CollectionReference colRef = _collectionReference;
-      return colRef.add(data);
-    } catch (e) {
+    if (!(_collectionReference is CollectionReference))
       throw Exception(
           'cannot call add on Query, use collection reference instead');
-    }
+    CollectionReference colRef = _collectionReference as CollectionReference;
+    return colRef.add(data);
   }
 
   /// delete document with [id] from the collection
   Future<void> delete(id) {
-    try {
-      CollectionReference colRef = _collectionReference;
-      return colRef.doc(id).delete();
-    } catch (e) {
+    if (!(_collectionReference is CollectionReference))
       throw Exception(
-          'cannot call delete on Query, use collection reference instead');
-    }
+          'cannot call add on Query, use collection reference instead');
+    CollectionReference colRef = _collectionReference as CollectionReference;
+    return colRef.doc(id).delete();
   }
 
   /// create or update a document with [id], [merge] defines whether the document should overwrite
   Future<void> setDoc(String id, var data, {bool merge = false}) {
-    try {
-      CollectionReference colRef = _collectionReference;
-      return colRef.doc(id).set(data, SetOptions(merge: merge));
-    } catch (e) {
+    if (!(_collectionReference is CollectionReference))
       throw Exception(
-          'cannot call set on Query, use collection reference instead');
-    }
+          'cannot call add on Query, use collection reference instead');
+    CollectionReference colRef = _collectionReference as CollectionReference;
+    return colRef.doc(id).set(data, SetOptions(merge: merge));
   }
 
   /// set a geo point with [latitude] and [longitude] using [field] as the object key to the document with [id]
   Future<void> setPoint(
       String id, String field, double latitude, double longitude) {
-    try {
-      CollectionReference colRef = _collectionReference;
-      var point = GeoFirePoint(latitude, longitude).data;
-      return colRef.doc(id).set({'$field': point}, SetOptions(merge: true));
-    } catch (e) {
+    if (!(_collectionReference is CollectionReference))
       throw Exception(
-          'cannot call set on Query, use collection reference instead');
-    }
+          'cannot call add on Query, use collection reference instead');
+    CollectionReference colRef = _collectionReference as CollectionReference;
+    var point = GeoFirePoint(latitude, longitude).data;
+    return colRef.doc(id).set({'$field': point}, SetOptions(merge: true));
   }
 
   /// query firestore documents based on geographic [radius] from geoFirePoint [center]
   /// [field] specifies the name of the key in the document
   Stream<List<DocumentSnapshot>> within({
-    @required GeoFirePoint center,
-    @required double radius,
-    @required String field,
+    required GeoFirePoint center,
+    required double radius,
+    required String field,
     bool strictMode = false,
   }) {
     final precision = Util.setPrecision(radius);
@@ -92,7 +84,7 @@ class GeoFireCollectionRef {
       final tempQuery = _queryPoint(hash, field);
       return _createStream(tempQuery).map((QuerySnapshot querySnapshot) {
         return querySnapshot.docs
-            .map((element) => DistanceDocSnapshot(element, null))
+            .map((element) => DistanceDocSnapshot(element, 0))
             .toList();
       });
     });
@@ -105,7 +97,7 @@ class GeoFireCollectionRef {
         // split and fetch geoPoint from the nested Map
         final fieldList = field.split('.');
         var geoPointField =
-            distanceDocSnapshot.documentSnapshot.data()[fieldList[0]];
+            distanceDocSnapshot.documentSnapshot.data()![fieldList[0]];
         if (fieldList.length > 1) {
           for (int i = 1; i < fieldList.length; i++) {
             geoPointField = geoPointField[fieldList[i]];
