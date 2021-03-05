@@ -2,7 +2,7 @@
 
 [![version][version-badge]][package]
 [![MIT License][license-badge]][license]
-[![PRs Welcome][prs-badge]](http://makeapullrequest.com)
+[![PRs Welcome][prs-badge]](https://makeapullrequest.com)
 
 GeoFlutterFire is an open-source library that allows you to store and query a set of keys based on their geographic location. At its heart, GeoFlutterFire simply stores locations with string keys. Its main benefit, however, is the possibility of retrieving only those keys within a given geographic area - all in realtime.
 
@@ -216,7 +216,7 @@ radius.add(25);
 
 ### Limitations
 
-- range queries on multiple fields is not suppoerted by cloud_firestore at the moment, since this library already uses range query on `geohash` field, you cannot perform range queries with `GeoFireCollectionRef`.
+- range queries on multiple fields is not supported by cloud_firestore at the moment, since this library already uses range query on `geohash` field, you cannot perform range queries with `GeoFireCollectionRef`.
 - `limit()` and `orderBy()` are not supported at the moment. `limit()` could be used to limit docs inside each hash individually which would result in running limit on all 9 hashes inside the specified radius. `orderBy()` is first run on `geohashes` in the library, hence appending `orderBy()` with another feild wouldn't produce expected results. Alternatively documents can be sorted on client side.
 
 [version-badge]: https://img.shields.io/pub/vpre/geoflutterfire.svg

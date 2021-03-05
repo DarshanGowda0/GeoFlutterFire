@@ -2,6 +2,25 @@
 
 Demonstrates how to use the geoflutterfire plugin.
 
+To run this example:
+
+1. Go to https://firebase.google.com/ and create a new project.
+2. Enable the Cloud Firestore API by visiting https://console.developers.google.com/apis/library/firestore.googleapis.com
+3. Create a database in test mode.
+4. Create a Google Maps API key.  Visit https://console.cloud.google.com/project/_/apiui/credential and select the project.
+5. Create Credentials -> API Key.
+6. Go to https://console.cloud.google.com/google/maps-apis and enable the Maps API for the platforms you will use.
+
+Android:
+1. Select 'Add Firebase to your Android app' and use package name: com.example.example
+2. Download the google-services.json file and add it to the android/app folder.
+3. Paste API key value into android/app/src/main/AndroidManifest.xml as the value for the com.google.android.geo.API_KEY meta data.
+
+iOS:
+1. Select 'Add Firebase to your iOS app' and use package name: com.example.example
+2. Download the GoogleService-Info.plist and add it to the runner/runner using Xcode.
+3. Paste API key value into ios/Runner/AppDelegate.swift as the parameter for GMSServices.provideAPIKey.
+
 ```dart
    import 'package:flutter/material.dart';
    import 'package:geoflutterfire/geoflutterfire.dart';
