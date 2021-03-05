@@ -1,3 +1,6 @@
+## 2.2.2
+* upgraded dependencies, latest before Flutter 2.0 and null safety
+
 ## 2.2.1
 * upgraded dependencies
 
