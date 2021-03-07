@@ -1,5 +1,6 @@
-## 3.0.0
+## 3.0.0-nullsafety.1
 * Added null safety.
+* Updated example app
 
 ## 2.2.2
 * upgraded dependencies, latest before Flutter 2.0 and null safety
