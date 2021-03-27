@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rxdart/rxdart.dart';
@@ -30,7 +31,7 @@ class _MyAppState extends State<MyApp> {
   final _firestore = FirebaseFirestore.instance;
   late Geoflutterfire geo;
   late Stream<List<DocumentSnapshot>> stream;
-  var radius = BehaviorSubject.seeded(1.0);
+  var radius = BehaviorSubject.seeded(100.0);
 
   //Map markers
   List<Marker> markers = [];
@@ -43,9 +44,7 @@ class _MyAppState extends State<MyApp> {
     stream = radius.switchMap((rad) {
       var collectionReference = _firestore.collection('locations');
       //          .where('name', isEqualTo: 'darshan');
-      return geo
-          .collection(collectionRef: collectionReference)
-          .within(center: center, radius: rad, field: 'position');
+      return geo.collection(collectionRef: collectionReference).within(center: center, radius: rad, field: 'position');
 
       /** Example to specify nested object
           var collectionReference = _firestore.collection('nestedLocations');
@@ -93,6 +92,7 @@ class _MyAppState extends State<MyApp> {
                           target: LatLng(12.960632, 77.641603),
                           zoom: 15.0,
                         ),
+                        markers: markers.toSet(),
                       ),
                     ),
                   ),
@@ -191,10 +191,11 @@ class _MyAppState extends State<MyApp> {
 
   void _addPoint(double lat, double lng) {
     GeoFirePoint geoFirePoint = geo.point(latitude: lat, longitude: lng);
-    _firestore
-        .collection('locations')
-        .add({'name': 'random name', 'position': geoFirePoint.data}).then((_) {
+    _firestore.collection('locations').add({'name': 'random name', 'position': geoFirePoint.data}).then((_) {
       print('added ${geoFirePoint.hash} successfully');
+    });
+    setState(() {
+
     });
   }
 
@@ -229,7 +230,7 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  double _value = 20.0;
+  double _value = 40.0;
   String _label = '';
 
   changed(value) {
@@ -237,7 +238,7 @@ class _MyAppState extends State<MyApp> {
       _value = value;
       _label = '${_value.toInt().toString()} kms';
       markers.clear();
+      radius.add(value);
     });
-    radius.add(value);
   }
 }

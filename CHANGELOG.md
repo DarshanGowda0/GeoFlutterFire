@@ -1,3 +1,7 @@
+## 3.0.0-nullsafety.2
+* Removes suspicious GeoFireCollectionRef.data(id) method. Resolves #113
+* Updated example
+
 ## 3.0.0-nullsafety.1
 * Added null safety.
 * Updated example app
