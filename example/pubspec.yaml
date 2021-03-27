@@ -33,9 +33,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  geoflutterfire:
-    path: ../
-
+  geoflutterfire: ^3.0.0-nullsafety.2
   cloud_firestore: ^1.0.0
   google_maps_flutter: ^2.0.1
 
