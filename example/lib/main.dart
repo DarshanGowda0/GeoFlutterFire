@@ -30,7 +30,7 @@ class _MyAppState extends State<MyApp> {
   // firestore init
   final _firestore = FirebaseFirestore.instance;
   late Geoflutterfire geo;
-  late Stream<List<DocumentSnapshot>> stream;
+  late Stream<List<DocumentSnapshot<Map<String, dynamic>>>> stream;
   var radius = BehaviorSubject.seeded(100.0);
 
   //Map markers
@@ -44,7 +44,9 @@ class _MyAppState extends State<MyApp> {
     stream = radius.switchMap((rad) {
       var collectionReference = _firestore.collection('locations');
       //          .where('name', isEqualTo: 'darshan');
-      return geo.collection(collectionRef: collectionReference).within(center: center, radius: rad, field: 'position');
+      return geo
+          .collection(collectionRef: collectionReference)
+          .within(center: center, radius: rad, field: 'position');
 
       /** Example to specify nested object
           var collectionReference = _firestore.collection('nestedLocations');
@@ -174,7 +176,7 @@ class _MyAppState extends State<MyApp> {
 
   void _onMapCreated(GoogleMapController controller) {
     _mapController.complete(controller);
-    stream.listen((List<DocumentSnapshot> documentList) {
+    stream.listen((List<DocumentSnapshot<Map<String, dynamic>>> documentList) {
       _updateMarkers(documentList);
     });
   }
@@ -191,12 +193,12 @@ class _MyAppState extends State<MyApp> {
 
   void _addPoint(double lat, double lng) {
     GeoFirePoint geoFirePoint = geo.point(latitude: lat, longitude: lng);
-    _firestore.collection('locations').add({'name': 'random name', 'position': geoFirePoint.data}).then((_) {
+    _firestore
+        .collection('locations')
+        .add({'name': 'random name', 'position': geoFirePoint.data}).then((_) {
       print('added ${geoFirePoint.hash} successfully');
     });
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   //example to add geoFirePoint inside nested object
@@ -223,8 +225,9 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  void _updateMarkers(List<DocumentSnapshot> documentList) {
-    documentList.forEach((DocumentSnapshot document) {
+  void _updateMarkers(
+      List<DocumentSnapshot<Map<String, dynamic>>> documentList) {
+    documentList.forEach((DocumentSnapshot<Map<String, dynamic>> document) {
       GeoPoint point = document['position']['geopoint'];
       _addMarker(point.latitude, point.longitude);
     });
