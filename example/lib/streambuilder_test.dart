@@ -9,7 +9,7 @@ class StreamTestWidget extends StatefulWidget {
 }
 
 class _StreamTestWidgetState extends State<StreamTestWidget> {
-  late Stream<List<DocumentSnapshot>> stream;
+  late Stream<List<DocumentSnapshot<Map<String, dynamic>>>> stream;
   final _firestore = FirebaseFirestore.instance;
   final geo = Geoflutterfire();
 
@@ -36,7 +36,8 @@ class _StreamTestWidgetState extends State<StreamTestWidget> {
           StreamBuilder(
             stream: stream,
             builder: (BuildContext context,
-                AsyncSnapshot<List<DocumentSnapshot>> snapshots) {
+                AsyncSnapshot<List<DocumentSnapshot<Map<String, dynamic>>>>
+                    snapshots) {
               if (snapshots.connectionState == ConnectionState.active &&
                   snapshots.hasData) {
                 print('data ${snapshots.data}');

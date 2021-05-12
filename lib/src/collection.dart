@@ -9,14 +9,14 @@ import 'util.dart';
 
 class GeoFireCollectionRef {
   Query _collectionReference;
-  late Stream<QuerySnapshot> _stream;
+  late Stream<QuerySnapshot<Map<String, dynamic>>> _stream;
 
   GeoFireCollectionRef(this._collectionReference) {
     _stream = _createStream(_collectionReference).shareReplay(maxSize: 1);
   }
 
   /// return QuerySnapshot stream
-  Stream<QuerySnapshot> snapshot() {
+  Stream<QuerySnapshot<Map<String, dynamic>>> snapshot() {
     return _stream;
   }
 
@@ -60,7 +60,7 @@ class GeoFireCollectionRef {
 
   /// query firestore documents based on geographic [radius] from geoFirePoint [center]
   /// [field] specifies the name of the key in the document
-  Stream<List<DocumentSnapshot>> within({
+  Stream<List<DocumentSnapshot<Map<String, dynamic>>>> within({
     required GeoFirePoint center,
     required double radius,
     required String field,
@@ -72,7 +72,8 @@ class GeoFireCollectionRef {
 
     Iterable<Stream<List<DistanceDocSnapshot>>> queries = area.map((hash) {
       final tempQuery = _queryPoint(hash, field);
-      return _createStream(tempQuery).map((QuerySnapshot querySnapshot) {
+      return _createStream(tempQuery)
+          .map((QuerySnapshot<Map<String, dynamic>> querySnapshot) {
         return querySnapshot.docs
             .map((element) => DistanceDocSnapshot(element, 0))
             .toList();
@@ -141,7 +142,7 @@ class GeoFireCollectionRef {
   }
 
   /// create an observable for [ref], [ref] can be [Query] or [CollectionReference]
-  Stream<QuerySnapshot> _createStream(var ref) {
+  Stream<QuerySnapshot<Map<String, dynamic>>> _createStream(var ref) {
     return ref.snapshots();
   }
 }
