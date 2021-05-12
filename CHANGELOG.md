@@ -1,3 +1,6 @@
+## 3.0.0-nullsafety.3
+* Updated dependencies, https://github.com/DarshanGowda0/GeoFlutterFire/pull/158 (contributor https://github.com/xmany )
+
 ## 3.0.0-nullsafety.2
 * Removes suspicious GeoFireCollectionRef.data(id) method. Resolves #113
 * Updated example
