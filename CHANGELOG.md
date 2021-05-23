@@ -1,3 +1,8 @@
+## 3.0.0-nullsafety.4
+* Updated example - add button for testing Stream, fixed minor issues.
+* Fixed unwrapping Object returned by Firestore
+
+
 ## 3.0.0-nullsafety.3
 * Updated dependencies, https://github.com/DarshanGowda0/GeoFlutterFire/pull/158 (contributor https://github.com/xmany )
 
