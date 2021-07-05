@@ -52,6 +52,17 @@ class GeoFirePoint {
     return GeoFirePoint.distanceBetween(
         from: coords, to: Coordinates(lat, lng));
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is GeoFirePoint &&
+          runtimeType == other.runtimeType &&
+          latitude == other.latitude &&
+          longitude == other.longitude;
+
+  @override
+  int get hashCode => latitude.hashCode ^ longitude.hashCode;
 }
 
 class Coordinates {
