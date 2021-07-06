@@ -1,3 +1,6 @@
+## 3.0.1
+* BREAKING CHANGE: == and hashCode behaves differently in collection and == operations for GeoFirePoint fixes #162
+
 ## 3.0.0-nullsafety.4
 * Updated example - add button for testing Stream, fixed minor issues.
 * Fixed unwrapping Object returned by Firestore
