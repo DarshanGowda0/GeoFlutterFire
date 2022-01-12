@@ -45,7 +45,7 @@ class _StreamTestWidgetState extends State<StreamTestWidget> {
                   child: ListView.builder(
                     itemBuilder: (context, index) {
                       final doc = snapshots.data[index];
-                      final data = doc.data();
+                      final data = doc.data() as Map<String, dynamic>;
                       print(
                           'doc with id ${doc.id} distance ${data['distance']}');
                       GeoPoint point = data['position']['geopoint'];
