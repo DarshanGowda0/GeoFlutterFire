@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:geoflutterfire/src/models/DistanceDocSnapshot.dart';
 import 'package:geoflutterfire/src/point.dart';
 import 'package:rxdart/rxdart.dart';
@@ -9,11 +8,10 @@ import 'package:rxdart/rxdart.dart';
 import 'util.dart';
 
 class GeoFireCollectionRef {
-  Query _collectionReference;
-  Stream<QuerySnapshot> _stream;
+  final CollectionReference _collectionReference;
+  late Stream<QuerySnapshot> _stream;
 
-  GeoFireCollectionRef(this._collectionReference)
-      : assert(_collectionReference != null) {
+  GeoFireCollectionRef(this._collectionReference) {
     _stream = _createStream(_collectionReference).shareReplay(maxSize: 1);
   }
 
@@ -81,9 +79,9 @@ class GeoFireCollectionRef {
   /// query firestore documents based on geographic [radius] from geoFirePoint [center]
   /// [field] specifies the name of the key in the document
   Stream<List<DocumentSnapshot>> within({
-    @required GeoFirePoint center,
-    @required double radius,
-    @required String field,
+    required GeoFirePoint center,
+    required double radius,
+    required String field,
     bool strictMode = false,
   }) {
     final precision = Util.setPrecision(radius);
@@ -123,14 +121,14 @@ class GeoFireCollectionRef {
       final filteredList = strictMode
           ? mappedList
               .where((DistanceDocSnapshot doc) =>
-                      doc.distance <=
+                      doc.distance! <=
                       radius * 1.02 // buffer for edge distances;
                   )
               .toList()
           : mappedList.toList();
       filteredList.sort((a, b) {
-        final distA = a.distance;
-        final distB = b.distance;
+        final distA = a.distance!;
+        final distB = b.distance!;
         final val = (distA * 1000).toInt() - (distB * 1000).toInt();
         return val;
       });

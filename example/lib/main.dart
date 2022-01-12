@@ -23,15 +23,16 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  GoogleMapController _mapController;
-  TextEditingController _latitudeController, _longitudeController;
+  GoogleMapController? _mapController;
+  TextEditingController? _latitudeController, _longitudeController;
 
   // firestore init
-  final _firestore = FirebaseFirestore.instance;
-  Geoflutterfire geo;
-  Stream<List<DocumentSnapshot>> stream;
   final radius = BehaviorSubject<double>.seeded(1.0);
-  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+  final _firestore = FirebaseFirestore.instance;
+  final markers = <MarkerId, Marker>{};
+
+  late Stream<List<DocumentSnapshot>> stream;
+  late Geoflutterfire geo;
 
   @override
   void initState() {
@@ -42,8 +43,8 @@ class _MyAppState extends State<MyApp> {
     geo = Geoflutterfire();
     GeoFirePoint center = geo.point(latitude: 12.960632, longitude: 77.641603);
     stream = radius.switchMap((rad) {
-      var collectionReference = _firestore.collection('locations');
-//          .where('name', isEqualTo: 'darshan');
+      final collectionReference = _firestore.collection('locations');
+
       return geo.collection(collectionRef: collectionReference).within(
           center: center, radius: rad, field: 'position', strictMode: true);
 
@@ -61,8 +62,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
-    _latitudeController.dispose();
-    _longitudeController.dispose();
+    _latitudeController?.dispose();
+    _longitudeController?.dispose();
     radius.close();
     super.dispose();
   }
@@ -159,8 +160,10 @@ class _MyAppState extends State<MyApp> {
                   MaterialButton(
                     color: Colors.blue,
                     onPressed: () {
-                      final lat = double.parse(_latitudeController.text);
-                      final lng = double.parse(_longitudeController.text);
+                      final lat =
+                          double.parse(_latitudeController?.text ?? '0.0');
+                      final lng =
+                          double.parse(_longitudeController?.text ?? '0.0');
                       _addPoint(lat, lng);
                     },
                     child: const Text(
@@ -177,8 +180,8 @@ class _MyAppState extends State<MyApp> {
                   style: TextStyle(color: Colors.white),
                 ),
                 onPressed: () {
-                  final lat = double.parse(_latitudeController.text);
-                  final lng = double.parse(_longitudeController.text);
+                  final lat = double.parse(_latitudeController?.text ?? '0.0');
+                  final lng = double.parse(_longitudeController?.text ?? '0.0');
                   _addNestedPoint(lat, lng);
                 },
               )
@@ -201,7 +204,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _showHome() {
-    _mapController.animateCamera(CameraUpdate.newCameraPosition(
+    _mapController?.animateCamera(CameraUpdate.newCameraPosition(
       const CameraPosition(
         target: LatLng(12.960632, 77.641603),
         zoom: 15.0,
