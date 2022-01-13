@@ -1,3 +1,8 @@
+## 2.2.3
+Applied fixes and upgrades from the community ♥
+* upgraded dependencies, fixed errors
+
+
 ## 2.2.2
 * upgraded dependencies, latest before Flutter 2.0 and null safety
 
