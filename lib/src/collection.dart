@@ -1,17 +1,17 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
-import 'package:geoflutterfire/src/models/DistanceDocSnapshot.dart';
-import 'package:geoflutterfire/src/point.dart';
-import 'util.dart';
-import 'package:rxdart/rxdart.dart';
 import 'dart:async';
 
-class GeoFireCollectionRef {
-  Query _collectionReference;
-  Stream<QuerySnapshot> _stream;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geoflutterfire/src/models/DistanceDocSnapshot.dart';
+import 'package:geoflutterfire/src/point.dart';
+import 'package:rxdart/rxdart.dart';
 
-  GeoFireCollectionRef(this._collectionReference)
-      : assert(_collectionReference != null) {
+import 'util.dart';
+
+class GeoFireCollectionRef {
+  final CollectionReference _collectionReference;
+  late Stream<QuerySnapshot> _stream;
+
+  GeoFireCollectionRef(this._collectionReference) {
     _stream = _createStream(_collectionReference).shareReplay(maxSize: 1);
   }
 
@@ -79,9 +79,9 @@ class GeoFireCollectionRef {
   /// query firestore documents based on geographic [radius] from geoFirePoint [center]
   /// [field] specifies the name of the key in the document
   Stream<List<DocumentSnapshot>> within({
-    @required GeoFirePoint center,
-    @required double radius,
-    @required String field,
+    required GeoFirePoint center,
+    required double radius,
+    required String field,
     bool strictMode = false,
   }) {
     final precision = Util.setPrecision(radius);
@@ -104,8 +104,9 @@ class GeoFireCollectionRef {
       var mappedList = list.map((DistanceDocSnapshot distanceDocSnapshot) {
         // split and fetch geoPoint from the nested Map
         final fieldList = field.split('.');
-        var geoPointField =
-            distanceDocSnapshot.documentSnapshot.data()[fieldList[0]];
+        final data =
+            distanceDocSnapshot.documentSnapshot.data() as Map<String, dynamic>;
+        var geoPointField = data[fieldList[0]];
         if (fieldList.length > 1) {
           for (int i = 1; i < fieldList.length; i++) {
             geoPointField = geoPointField[fieldList[i]];
@@ -120,14 +121,14 @@ class GeoFireCollectionRef {
       final filteredList = strictMode
           ? mappedList
               .where((DistanceDocSnapshot doc) =>
-                      doc.distance <=
+                      doc.distance! <=
                       radius * 1.02 // buffer for edge distances;
                   )
               .toList()
           : mappedList.toList();
       filteredList.sort((a, b) {
-        final distA = a.distance;
-        final distB = b.distance;
+        final distA = a.distance!;
+        final distB = b.distance!;
         final val = (distA * 1000).toInt() - (distB * 1000).toInt();
         return val;
       });
