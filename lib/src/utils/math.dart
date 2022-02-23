@@ -1,13 +1,14 @@
 import 'dart:math';
-import 'package:geoflutterfire/src/point.dart';
 
-class Util {
-  static const BASE32_CODES = '0123456789bcdefghjkmnpqrstuvwxyz';
-  Map<String, int> base32CodesDic = new Map();
+import '../models/point.dart';
 
-  Util() {
-    for (var i = 0; i < BASE32_CODES.length; i++) {
-      base32CodesDic.putIfAbsent(BASE32_CODES[i], () => i);
+class MathUtils {
+  static const base32Codes = '0123456789bcdefghjkmnpqrstuvwxyz';
+  Map<String, int> base32CodesDic = {};
+
+  MathUtils() {
+    for (var i = 0; i < base32Codes.length; i++) {
+      base32CodesDic.putIfAbsent(base32Codes[i], () => i);
     }
   }
 
@@ -33,14 +34,14 @@ class Util {
   String encode(var latitude, var longitude, var numberOfChars) {
     if (numberOfChars == encodeAuto) {
       if (latitude.runtimeType == double || longitude.runtimeType == double) {
-        throw new Exception('string notation required for auto precision.');
+        throw Exception('string notation required for auto precision.');
       }
       int decSigFigsLat = latitude.split('.')[1].length;
       int decSigFigsLon = longitude.split('.')[1].length;
       int numberOfSigFigs = max(decSigFigsLat, decSigFigsLon);
       numberOfChars = sigfigHashLength[numberOfSigFigs];
-    } else if (numberOfChars == null) {
-      numberOfChars = 9;
+    } else {
+      numberOfChars ??= 9;
     }
 
     var chars = [], bits = 0, bitsTotal = 0, hashValue = 0;
@@ -70,7 +71,7 @@ class Util {
       bits++;
       bitsTotal++;
       if (bits == 5) {
-        var code = BASE32_CODES[hashValue];
+        var code = base32Codes[hashValue];
         chars.add(code);
         bits = 0;
         hashValue = 0;
@@ -89,13 +90,13 @@ class Util {
     var isLon = true;
     double maxLat = 90, minLat = -90, maxLon = 180, minLon = -180, mid;
 
-    int hashValue = 0;
+    int? hashValue = 0;
     for (var i = 0, l = hashString.length; i < l; i++) {
       var code = hashString[i].toLowerCase();
-      hashValue = base32CodesDic[code]!;
+      hashValue = base32CodesDic[code];
 
       for (var bits = 4; bits >= 0; bits--) {
-        var bit = (hashValue >> bits) & 1;
+        var bit = (hashValue! >> bits) & 1;
         if (isLon) {
           mid = (maxLon + minLon) / 2;
           if (bit == 1) {
@@ -161,16 +162,16 @@ class Util {
   List<String> neighbors(String hashString) {
     int hashStringLength = hashString.length;
     var lonlat = decode(hashString);
-    double lat = lonlat['latitude']!;
-    double lon = lonlat['longitude']!;
+    double? lat = lonlat['latitude'];
+    double? lon = lonlat['longitude'];
     double latErr = lonlat['latitudeError']! * 2;
     double lonErr = lonlat['longitudeError']! * 2;
 
-    var neighborLat, neighborLon;
+    num neighborLat, neighborLon;
 
-    String encodeNeighbor(neighborLatDir, neighborLonDir) {
-      neighborLat = lat + neighborLatDir * latErr;
-      neighborLon = lon + neighborLonDir * lonErr;
+    String encodeNeighbor(num neighborLatDir, num neighborLonDir) {
+      neighborLat = lat! + neighborLatDir * latErr;
+      neighborLon = lon! + neighborLonDir * lonErr;
       return encode(neighborLat, neighborLon, hashStringLength);
     }
 
@@ -202,39 +203,40 @@ class Util {
       *
      */
 
-    if (km <= 0.00477)
+    if (km <= 0.00477) {
       return 9;
-    else if (km <= 0.0382)
+    } else if (km <= 0.0382) {
       return 8;
-    else if (km <= 0.153)
+    } else if (km <= 0.153) {
       return 7;
-    else if (km <= 1.22)
+    } else if (km <= 1.22) {
       return 6;
-    else if (km <= 4.89)
+    } else if (km <= 4.89) {
       return 5;
-    else if (km <= 39.1)
+    } else if (km <= 39.1) {
       return 4;
-    else if (km <= 156)
+    } else if (km <= 156) {
       return 3;
-    else if (km <= 1250)
+    } else if (km <= 1250) {
       return 2;
-    else
+    } else {
       return 1;
+    }
   }
 
-  static const double MAX_SUPPORTED_RADIUS = 8587;
+  static const double maxSupportedRadius = 8587;
 
   // Length of a degree latitude at the equator
-  static const double METERS_PER_DEGREE_LATITUDE = 110574;
+  static const double metersPerDegreeLatitude = 110574;
 
   // The equatorial circumference of the earth in meters
-  static const double EARTH_MERIDIONAL_CIRCUMFERENCE = 40007860;
+  static const double earthMeridionalCircumference = 40007860;
 
   // The equatorial radius of the earth in meters
-  static const double EARTH_EQ_RADIUS = 6378137;
+  static const double earthEqRadius = 6378137;
 
   // The meridional radius of the earth in meters
-  static const double EARTH_POLAR_RADIUS = 6357852.3;
+  static const double earthPolarRadius = 6357852.3;
 
   /* The following value assumes a polar radius of
      * r_p = 6356752.3
@@ -243,20 +245,22 @@ class Util {
      * The value is calculated as e2 == (r_e^2 - r_p^2)/(r_e^2)
      * Use exact value to avoid rounding errors
      */
-  static const double EARTH_E2 = 0.00669447819799;
+  static const double earthE2 = 0.00669447819799;
 
   // Cutoff for floating point calculations
-  static const double EPSILON = 1e-12;
+  static const double epsilon = 1e-12;
 
-  static double distance(Coordinates location1, Coordinates location2) {
-    return calcDistance(location1.latitude, location1.longitude,
+  /// distance in km
+  static double kmDistance(Coordinates location1, Coordinates location2) {
+    return kmCalcDistance(location1.latitude, location1.longitude,
         location2.latitude, location2.longitude);
   }
 
-  static double calcDistance(
+  /// distance in km
+  static double kmCalcDistance(
       double lat1, double long1, double lat2, double long2) {
     // Earth's mean radius in meters
-    final double radius = (EARTH_EQ_RADIUS + EARTH_POLAR_RADIUS) / 2;
+    const radius = (earthEqRadius + earthPolarRadius) / 2;
     double latDelta = _toRadians(lat1 - lat2);
     double lonDelta = _toRadians(long1 - long2);
 
