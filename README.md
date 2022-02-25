@@ -173,7 +173,7 @@ Example: `var point = geo.point(38, -119)`
 
 - `point.distance(latitude, longitude)` Haversine distance to a point
 
-## Using Firestore ```withConversion``` method
+## Using Firestore ```withConverter``` method
 
 If you want to use the collections or queries with this method, you should use ```GeoFlutterFire().collectionWithConverter<T>({ required Query<T> collectionRef })``` instead of ```GeoFlutterFire().collection({ required Query<Map<String, dynamic>> collectionRef })```.
 
