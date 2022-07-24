@@ -14,7 +14,7 @@ class BaseGeoFireCollectionRef<T> {
   late final Stream<QuerySnapshot<T>>? _stream;
 
   BaseGeoFireCollectionRef(this._collectionReference) {
-    _stream = _createStream(_collectionReference).shareReplay(maxSize: 1);
+    _stream = _createStream(_collectionReference, true).shareReplay(maxSize: 1);
   }
 
   /// return QuerySnapshot stream
@@ -84,6 +84,40 @@ class BaseGeoFireCollectionRef<T> {
     }
   }
 
+  Future<List<DocumentSnapshot<T>>> get({
+    required GeoFirePoint center,
+    required double radius,
+    required String field,
+    required GeoPoint? Function(T t) geopointFrom,
+    required bool? strictMode,
+  }) {
+    return protectedWithin(
+      center: center,
+      field: field,
+      geopointFrom: geopointFrom,
+      radius: radius,
+      strictMode: strictMode,
+      live: false,
+    ).first;
+  }
+
+  Future<List<DistanceDocSnapshot<T>>> getWithDistance({
+    required GeoFirePoint center,
+    required double radius,
+    required String field,
+    required GeoPoint? Function(T t) geopointFrom,
+    required bool? strictMode,
+  }) {
+    return protectedWithinWithDistance(
+      center: center,
+      field: field,
+      geopointFrom: geopointFrom,
+      radius: radius,
+      strictMode: strictMode,
+      live: false,
+    ).first;
+  }
+
   @protected
   Stream<List<DocumentSnapshot<T>>> protectedWithin({
     required GeoFirePoint center,
@@ -91,6 +125,7 @@ class BaseGeoFireCollectionRef<T> {
     required String field,
     required GeoPoint? Function(T t) geopointFrom,
     required bool? strictMode,
+    bool live = true,
   }) =>
       protectedWithinWithDistance(
         center: center,
@@ -98,6 +133,7 @@ class BaseGeoFireCollectionRef<T> {
         field: field,
         geopointFrom: geopointFrom,
         strictMode: strictMode,
+        live: live,
       ).map((snapshots) =>
           snapshots.map((snapshot) => snapshot.documentSnapshot).toList());
 
@@ -110,6 +146,7 @@ class BaseGeoFireCollectionRef<T> {
     required String field,
     required GeoPoint? Function(T t) geopointFrom,
     required bool? strictMode,
+    bool live = true,
   }) {
     final nonNullStrictMode = strictMode ?? false;
 
@@ -119,7 +156,7 @@ class BaseGeoFireCollectionRef<T> {
 
     final queries = area.map((hash) {
       final tempQuery = _queryPoint(hash, field);
-      return _createStream(tempQuery).map((querySnapshot) {
+      return _createStream(tempQuery, live).map((querySnapshot) {
         return querySnapshot.docs;
       });
     });
@@ -193,7 +230,7 @@ class BaseGeoFireCollectionRef<T> {
   }
 
   /// create an observable for [ref], [ref] can be [Query] or [CollectionReference]
-  Stream<QuerySnapshot<T>> _createStream(Query<T> ref) {
-    return ref.snapshots();
+  Stream<QuerySnapshot<T>> _createStream(Query<T> ref, bool live) {
+    return live ? ref.snapshots() : ref.get().asStream();
   }
 }
