@@ -10,7 +10,7 @@ import 'streambuilder_test.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     title: 'Geo Flutter Fire example',
     home: MyApp(),
     debugShowCheckedModeBanner: false,
@@ -18,11 +18,13 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
-  _MyAppState createState() => _MyAppState();
+  MyAppState createState() => MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class MyAppState extends State<MyApp> {
   GoogleMapController? _mapController;
   TextEditingController? _latitudeController, _longitudeController;
 
@@ -82,7 +84,7 @@ class _MyAppState extends State<MyApp> {
                   : () {
                       _showHome();
                     },
-              icon: Icon(Icons.home),
+              icon: const Icon(Icons.home),
             )
           ],
         ),
@@ -92,7 +94,7 @@ class _MyAppState extends State<MyApp> {
               return StreamTestWidget();
             }));
           },
-          child: Icon(Icons.navigate_next),
+          child: const Icon(Icons.navigate_next),
         ),
         body: Container(
           child: Column(
@@ -101,7 +103,7 @@ class _MyAppState extends State<MyApp> {
               Center(
                 child: Card(
                   elevation: 4,
-                  margin: EdgeInsets.symmetric(vertical: 8),
+                  margin: const EdgeInsets.symmetric(vertical: 8),
                   child: SizedBox(
                     width: mediaQuery.size.width - 30,
                     height: mediaQuery.size.height * (1 / 3),
@@ -132,7 +134,7 @@ class _MyAppState extends State<MyApp> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Container(
+                  SizedBox(
                     width: 100,
                     child: TextField(
                       controller: _latitudeController,
@@ -145,7 +147,7 @@ class _MyAppState extends State<MyApp> {
                           )),
                     ),
                   ),
-                  Container(
+                  SizedBox(
                     width: 100,
                     child: TextField(
                       controller: _longitudeController,
@@ -236,23 +238,23 @@ class _MyAppState extends State<MyApp> {
 
   void _addMarker(double lat, double lng) {
     final id = MarkerId(lat.toString() + lng.toString());
-    final _marker = Marker(
+    final marker = Marker(
       markerId: id,
       position: LatLng(lat, lng),
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
       infoWindow: InfoWindow(title: 'latLng', snippet: '$lat,$lng'),
     );
     setState(() {
-      markers[id] = _marker;
+      markers[id] = marker;
     });
   }
 
   void _updateMarkers(List<DocumentSnapshot> documentList) {
-    documentList.forEach((DocumentSnapshot document) {
+    for (var document in documentList) {
       final data = document.data() as Map<String, dynamic>;
       final GeoPoint point = data['position']['geopoint'];
       _addMarker(point.latitude, point.longitude);
-    });
+    }
   }
 
   double _value = 20.0;

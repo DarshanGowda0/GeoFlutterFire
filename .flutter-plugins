@@ -1,0 +1,5 @@
+# This is a generated file; do not edit or check into version control.
+cloud_firestore=/usr/local/Caskroom/flutter/3.0.2/flutter/.pub-cache/hosted/pub.dartlang.org/cloud_firestore-4.0.2/
+cloud_firestore_web=/usr/local/Caskroom/flutter/3.0.2/flutter/.pub-cache/hosted/pub.dartlang.org/cloud_firestore_web-3.0.2/
+firebase_core=/usr/local/Caskroom/flutter/3.0.2/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core-2.1.0/
+firebase_core_web=/usr/local/Caskroom/flutter/3.0.2/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core_web-2.0.0/
