@@ -1,3 +1,19 @@
+## 3.0.3
+Applied fixes and upgrades from the community ♥
+
+This update made by https://github.com/LucaDillenburg
+
+### Support for Cloud Firestore type annotation and ```withConverter``` method
+- **Problem:** The last version of the package did not work well with the new ```Repository<T>``` and ```Query<T>``` types, because the code was not type annotated. Also, it couldn't work with the ```withConverter``` method from the ```cloud_firestore``` package.
+- **Solution**: The code was refactored to add type annotation and another class was created to both:
+1. Maintain compatibility with the last version
+2. Enable users to use the package with the ```withConverter``` method with little to no change. As explained in the README, the ```GeoFireCollectionWithConverterRef<T>``` class can be used instead of the original ```GeoFireCollectionRef``` with the only change needed to ```within``` method that now requires an extra parameter to actually get the ```GeoPoint``` from the ```T``` class.
+
+### Minor Tweaks
+- Linting was added and the warnings were resolved
+- Static types were prioritized instead of dynamic types
+- Create ```withinWithDistance``` method that returns the DocumentSnapshot with the calculated distance (to avoid recalculations)
+
 ## 3.0.2
 Applied fixes and upgrades from the community ♥
 * upgraded dependencies, fixed errors
