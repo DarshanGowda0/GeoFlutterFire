@@ -3,8 +3,12 @@
 .DS_Store
 .dart_tool/
 
+.flutter-plugins
+.flutter-plugins-dependencies
+
 .packages
 .pub/
 pubspec.lock
 
 build/
+
