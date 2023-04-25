@@ -18,3 +18,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+dependency_overrides:
+  flutter_plugin_android_lifecycle: ^2.0.5
+  google_maps_flutter_android: ^2.3.1
