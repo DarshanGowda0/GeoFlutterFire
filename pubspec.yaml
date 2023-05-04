@@ -12,13 +12,9 @@ dependencies:
     sdk: flutter
   rxdart: ^0.27.7
   flutter_lints: ^1.0.4
-  firebase_core:  ^2.9.0
+  firebase_core:  ^2.5.0
   cloud_firestore: ^4.3.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-dependency_overrides:
-  flutter_plugin_android_lifecycle: ^2.0.5
-  google_maps_flutter_android: ^2.3.1
