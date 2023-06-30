@@ -1,3 +1,9 @@
+## 3.0.4
+Applied fixes and upgrades from the community ♥
+* upgraded dependencies, fixed errors
+* updated environment to support Flutter 3.0 and latest
+* Example fixes with dependencies and android upgrade
+
 ## 3.0.3
 Applied fixes and upgrades from the community ♥
 
